@@ -1,54 +1,43 @@
 import * as React from 'react';
 import { messageHandler } from '@estruyf/vscode/dist/client';
+import ReactMarkdown from 'react-markdown';
 import "./styles.css";
 
-export interface IAppProps {}
+export interface IAppProps { }
 
 export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChildren<IAppProps>) => {
-  const [message, setMessage] = React.useState<string>("");
-  const [error, setError] = React.useState<string>("");
+  const [code, setCode] = React.useState<string>('');
 
-  const sendMessage = () => {
-    messageHandler.send('POST_DATA', { msg: 'Hello from the webview' });
-  };
+  const onPasteHandler = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const msg = event.clipboardData.getData('text/html');
+    setCode(msg);
+  }
 
-  const requestData = () => {
-    messageHandler.request<string>('GET_DATA').then((msg) => {
-      setMessage(msg);
+  React.useEffect(() => {
+    messageHandler.request<string>('getMarkdown').then((msg) => {
+      setCode(msg);
     });
-  };
-
-  const requestWithErrorData = () => {
-    messageHandler.request<string>('GET_DATA_ERROR')
-    .then((msg) => {
-      setMessage(msg);
-    })
-    .catch((err) => {
-      setError(err);
-    });
-  };
+  }, []);
 
   return (
     <div className='app'>
-      <h1>Hello from the React Webview Starter</h1>
+      <h1>Screendown</h1>
 
       <div className='app__actions'>
-        <button onClick={sendMessage}>
-          Send message to extension
-        </button>
-
-        <button onClick={requestData}>
-          Get data from extension
-        </button>
-
-        <button onClick={requestWithErrorData}>
-          Get data with error
-        </button>
+        Welcome to screendown
       </div>
 
-      {message && <p><strong>Message from the extension</strong>: {message}</p>}
+      <div className='bg-white'>
+        <textarea onPaste={onPasteHandler} className='w-full h-64 p-4' />
+      </div>
 
-      {error && <p className='app__error'><strong>ERROR</strong>: {error}</p>}
+      {
+        code && (
+          <ReactMarkdown>
+            {code}
+          </ReactMarkdown>
+        )
+      }
     </div>
   );
 };
