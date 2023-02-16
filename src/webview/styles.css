@@ -1,4 +1,4 @@
-h1 {
+body {
   font-family: var(--vscode-editor-font-family);
 }
 
@@ -14,4 +14,26 @@ h1 {
 
 .app__error {
   color: var(--vscode-editorError-foreground);
+}
+
+.app__screenshot {
+
+}
+
+.app__screenshot__wrapper {
+  padding: 24px;
+  background-color: white;
+  border-radius: 15px;
+  margin-top: 16px
+}
+
+.app__screenshot__wrapper__inner {
+  background-color: var(--vscode-editor-background);
+  padding: 24px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px var(--vscode-editor-background);
+}
+
+button {
+  margin-top: 16px;
 }

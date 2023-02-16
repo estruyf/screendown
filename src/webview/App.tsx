@@ -1,22 +1,55 @@
 import * as React from 'react';
-import { messageHandler } from '@estruyf/vscode/dist/client';
+import { messageHandler, Messenger } from '@estruyf/vscode/dist/client';
 import ReactMarkdown from 'react-markdown';
 import "./styles.css";
+import { EventData } from '@estruyf/vscode/dist/models';
+var domtoimage = require("dom-to-image-more");
 
 export interface IAppProps { }
 
 export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChildren<IAppProps>) => {
   const [code, setCode] = React.useState<string>('');
 
-  const onPasteHandler = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
-    const msg = event.clipboardData.getData('text/html');
-    setCode(msg);
+  const msgListener = (msg: MessageEvent<EventData<any>>) => {
+    const { data } = msg;
+
+    if (!data) {
+      return;
+    }
+
+    if (data.command === "setMarkdown") {
+      setCode(data.payload.trim());
+    }
+  };
+
+  const saveImage = async (blob: Blob) => {
+    messageHandler.send('saveImage', await blob.arrayBuffer());
   }
 
-  React.useEffect(() => {
-    messageHandler.request<string>('getMarkdown').then((msg) => {
-      setCode(msg);
+  const takeScreenshot = () => {
+    const node = document.querySelector('.app__screenshot');
+    if (!node) {
+      return;
+    }
+
+    domtoimage.toBlob(node).then((blob: Blob) => {
+      saveImage(blob)
+    })
+    .catch((error: any) => {
+      console.error('oops, something went wrong!', error);
     });
+  };
+
+  React.useEffect(() => {
+    Messenger.listen(msgListener);
+
+    messageHandler.request<string>('getMarkdown').then((msg) => {
+      setCode(msg.trim());
+    });
+
+    return () => {
+      Messenger.unlisten(msgListener);
+    }
   }, []);
 
   return (
@@ -24,18 +57,26 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
       <h1>Screendown</h1>
 
       <div className='app__actions'>
-        Welcome to screendown
-      </div>
-
-      <div className='bg-white'>
-        <textarea onPaste={onPasteHandler} className='w-full h-64 p-4' />
+        Take a screenshot from your Markdown
       </div>
 
       {
         code && (
-          <ReactMarkdown>
-            {code}
-          </ReactMarkdown>
+          <>
+            <div className='app__screenshot'>
+              <div className='app__screenshot__wrapper'>
+                <div className='app__screenshot__wrapper__inner'>
+                  <ReactMarkdown>
+                    {code}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            </div>
+
+            <button onClick={takeScreenshot}>
+              Take screenshot
+            </button>
+          </>
         )
       }
     </div>
