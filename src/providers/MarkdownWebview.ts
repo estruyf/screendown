@@ -13,11 +13,7 @@ export class MarkdownWebview {
 
     if (MarkdownWebview.panel) {
       MarkdownWebview.panel.reveal();
-
-      MarkdownWebview.panel.webview.postMessage({
-        command: "setMarkdown",
-        payload: MarkdownWebview.crntSelection,
-      } as MessageHandlerData<string>);
+      MarkdownWebview.triggerSelectionUpdate();
     } else {
       MarkdownWebview.open();
     }
@@ -25,6 +21,15 @@ export class MarkdownWebview {
 
   public static dispose() {
     MarkdownWebview.panel?.dispose();
+  }
+
+  public static triggerSelectionUpdate() {
+    MarkdownWebview.getSelection();
+
+    MarkdownWebview.panel?.webview.postMessage({
+      command: "setMarkdown",
+      payload: MarkdownWebview.crntSelection,
+    } as MessageHandlerData<string>);
   }
 
   public static async open() {
@@ -36,7 +41,7 @@ export class MarkdownWebview {
       ViewColumn.Beside,
       {
         enableScripts: true,
-        retainContextWhenHidden: true,
+        retainContextWhenHidden: true
       }
     );
 

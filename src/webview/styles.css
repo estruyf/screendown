@@ -1,39 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   font-family: var(--vscode-editor-font-family);
 }
 
-.app {
-  margin: 15px auto;
-  max-width: 80rem;
+.screenshot {
+  color: var(--screendown-text);
+
+  h1 {
+    color: var(--screendown-text);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    color: var(--screendown-text);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    color: var(--screendown-text);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  p {
+    color: var(--screendown-text);
+    margin-bottom: 16px;
+  }
+
+  a, a:hover, a:visited {
+    color: var(--screendown-link);
+  }
 }
 
-.app__actions {
-  display: flex;
-  gap: 1rem;
-}
-
-.app__error {
-  color: var(--vscode-editorError-foreground);
-}
-
-.app__screenshot {
-
-}
-
-.app__screenshot__wrapper {
-  padding: 24px;
-  background-color: white;
-  border-radius: 15px;
-  margin-top: 16px
-}
-
-.app__screenshot__wrapper__inner {
-  background-color: var(--vscode-editor-background);
-  padding: 24px;
-  border-radius: 15px;
-  box-shadow: 0 0 20px var(--vscode-editor-background);
-}
-
-button {
-  margin-top: 16px;
+.screenshot__wrapper__inner {
+  @apply border-0 h-full space-y-4 p-4 bg-[var(--vscode-editor-background)] shadow shadow-[var(--vscode-editor-background)];
 }

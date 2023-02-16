@@ -23,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   vscode.window.onDidChangeTextEditorSelection(e => {
     if (e.selections.length > 0 && MarkdownWebview.panel) {
-      MarkdownWebview.reveal();
+      MarkdownWebview.triggerSelectionUpdate();
     }
   })
 

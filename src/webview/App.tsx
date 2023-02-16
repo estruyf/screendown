@@ -8,7 +8,10 @@ var domtoimage = require("dom-to-image-more");
 export interface IAppProps { }
 
 export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChildren<IAppProps>) => {
+  const divRef = React.useRef<HTMLDivElement>(null);
   const [code, setCode] = React.useState<string>('');
+  const [width, setWidth] = React.useState<number>(1200);
+  const [height, setHeigth] = React.useState<number>(675);
 
   const msgListener = (msg: MessageEvent<EventData<any>>) => {
     const { data } = msg;
@@ -27,12 +30,15 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
   }
 
   const takeScreenshot = () => {
-    const node = document.querySelector('.app__screenshot');
+    const node = divRef.current;
     if (!node) {
       return;
     }
 
-    domtoimage.toBlob(node).then((blob: Blob) => {
+    domtoimage.toBlob(node, {
+      height,
+      width
+    }).then((blob: Blob) => {
       saveImage(blob)
     })
     .catch((error: any) => {
@@ -53,19 +59,31 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
   }, []);
 
   return (
-    <div className='app'>
-      <h1>Screendown</h1>
+    <div className='p-4'>
+      <h1 className={`text-3xl mb-4`}>Screendown</h1>
 
-      <div className='app__actions'>
+      <div className='text-lg mb-4'>
         Take a screenshot from your Markdown
       </div>
 
       {
         code && (
           <>
-            <div className='app__screenshot'>
-              <div className='app__screenshot__wrapper'>
-                <div className='app__screenshot__wrapper__inner'>
+            <div className='mb-4'>
+              <div className='mb-2'>
+                <span className='font-bold'>Markdown</span>
+
+                <input type="number" value={width} placeholder={`width`} className={`text-[var(--vscode-editor-background)]`} />
+                <input type="number" value={height} placeholder={`height`} className={`text-[var(--vscode-editor-background)]`} />
+              </div>
+            </div>
+
+            <div className='screenshot' ref={divRef}>
+              <div className='screenshot__wrapper bg-white p-8' style={{
+                  width: `${width}px`,
+                  height: `${height}px`,
+                }}>
+                <div className='screenshot__wrapper__inner border-0 h-full space-y-4 p-4 bg-[var(--vscode-editor-background)] shadow shadow-[var(--vscode-editor-background)]'>
                   <ReactMarkdown>
                     {code}
                   </ReactMarkdown>
@@ -73,9 +91,13 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
               </div>
             </div>
 
-            <button onClick={takeScreenshot}>
-              Take screenshot
-            </button>
+            <div className='flex justify-end'>
+              <button
+                className='mt-4 rounded bg-[var(--vscode-button-background)] text-[var(--vscode-button-foreground)] hover:bg-[var(--vscode-button-hoverBackground)] px-4 py-2' 
+                onClick={takeScreenshot}>
+                Take screenshot
+              </button>
+            </div>
           </>
         )
       }
