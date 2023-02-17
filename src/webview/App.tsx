@@ -299,7 +299,11 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
 
             {
               scale < 1 && (
-                <div className='py-2 text-[var(--vscode-editorInfo-foreground)] bg-[var(--vscode-panel-border)] text-center rounded-b'>
+                <div 
+                  className='py-2 text-[var(--vscode-editorInfo-foreground)] bg-[var(--vscode-panel-border)] text-center rounded-b'
+                  style={{
+                    width: `${width*scale}px`,
+                  }}>
                   <b>Info</b>: Image got scalled to fit the screen (scale: {(scale * 100).toFixed(0)}%).
                 </div>
               )
@@ -322,7 +326,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
         )
       }
 
-      <img className='none' src='https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Festruyf%2Fscreendown%2Fusers&label=Usage&countColor=%230e131f' />
+      <img className='hidden' src='https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Festruyf%2Fscreendown%2Fusers&label=Usage&countColor=%230e131f' />
     </div>
   );
 };
