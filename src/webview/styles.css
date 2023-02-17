@@ -6,6 +6,12 @@ body {
   font-family: var(--vscode-editor-font-family);
 }
 
+.screenshot__outer {
+  background-image: linear-gradient(45deg, #80808045 25%, transparent 25%), linear-gradient(-45deg, #80808045 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #80808045 75%), linear-gradient(-45deg, transparent 75%, #80808045 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
 .screenshot {
   color: var(--screendown-text);
   max-width: 100%;
@@ -13,21 +19,21 @@ body {
 
   h1 {
     color: var(--screendown-text);
-    font-size: 1.5rem;
+    font-size: 1.5em;
     font-weight: 600;
     margin-bottom: 16px;
   }
 
   h2 {
     color: var(--screendown-text);
-    font-size: 1.25rem;
+    font-size: 1.25em;
     font-weight: 600;
     margin-bottom: 16px;
   }
 
   h3 {
     color: var(--screendown-text);
-    font-size: 1rem;
+    font-size: 1em;
     font-weight: 600;
     margin-bottom: 16px;
   }

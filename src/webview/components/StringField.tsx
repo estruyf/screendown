@@ -9,7 +9,7 @@ export interface IStringFieldProps {
 
 export const StringField: React.FunctionComponent<IStringFieldProps> = ({ label, placeholder, value, onChange }: React.PropsWithChildren<IStringFieldProps>) => {
   return (
-    <div>
+    <div className='w-full'>
       <label htmlFor={label.replace(' ', '-').toLowerCase()} className="block text-sm font-medium text-[var(--vscode-editor-foreground)]">
         {label}
       </label>

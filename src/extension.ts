@@ -5,15 +5,6 @@ import { MarkdownWebview } from "./providers/MarkdownWebview";
 export function activate(context: vscode.ExtensionContext) {
   ExtensionService.getInstance(context);
 
-  vscode.commands.registerCommand(
-    "vscode-react-webview-starter.clipboard",
-    async () => {
-      const clipboard = vscode.env.clipboard;
-      const clipboardText = await clipboard.readText();
-      console.log(clipboardText);
-    }
-  );
-
   let disposable = vscode.commands.registerCommand(
     "vscode-react-webview-starter.openWebview",
     () => {

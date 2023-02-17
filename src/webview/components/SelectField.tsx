@@ -11,7 +11,7 @@ export interface ISelectFieldProps {
 
 export const SelectField: React.FunctionComponent<ISelectFieldProps> = ({ options, label, placeholder, value, onChange }: React.PropsWithChildren<ISelectFieldProps>) => {
   return (
-    <div>
+    <div className='w-full'>
       <label htmlFor={label.replace(' ', '-').toLowerCase()} className="block text-sm font-medium text-[var(--vscode-editor-foreground)]">
         {label}
       </label>

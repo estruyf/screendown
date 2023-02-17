@@ -19,12 +19,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "vscode-react-webview-starter.clipboard",
-        "title": "React Webview: Clipboard"
-      },
-      {
-        "command": "vscode-react-webview-starter.openWebview",
-        "title": "React Webview: Open webview"
+        "command": "screendown.openWebview",
+        "title": "Screendown: Take a screenshot"
       }
     ]
   },

@@ -5,11 +5,13 @@ export interface INumberFieldProps {
   placeholder: string;
   value: number;
   onChange: (value: number) => void;
+
+  [prop: string]: any; // Allow any other property
 }
 
-export const NumberField: React.FunctionComponent<INumberFieldProps> = ({ label, placeholder, value, onChange }: React.PropsWithChildren<INumberFieldProps>) => {
+export const NumberField: React.FunctionComponent<INumberFieldProps> = ({ label, placeholder, value, onChange, ...props }: React.PropsWithChildren<INumberFieldProps>) => {
   return (
-    <div>
+    <div className='w-full'>
       <label htmlFor={label.replace(' ', '-').toLowerCase()} className="block text-sm font-medium text-[var(--vscode-editor-foreground)]">
         {label}
       </label>
@@ -28,6 +30,7 @@ export const NumberField: React.FunctionComponent<INumberFieldProps> = ({ label,
               onChange(0);
             }
           }}
+          {...props}
         />
       </div>
     </div>
