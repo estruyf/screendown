@@ -63,6 +63,7 @@
     "dom-to-image-more": "^2.15.0",
     "eslint": "^8.20.0",
     "glob": "^8.0.3",
+    "html-to-image": "^1.11.11",
     "mocha": "^10.0.0",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.21",
