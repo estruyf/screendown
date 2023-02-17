@@ -78,6 +78,11 @@ export class MarkdownWebview {
       ext.context.subscriptions
     );
 
+    MarkdownWebview.panel.iconPath = {
+      dark: Uri.file(join(ext.extensionPath, 'assets/icon.svg')),
+      light: Uri.file(join(ext.extensionPath, 'assets/icon.svg')),
+    }
+
     MarkdownWebview.panel.onDidDispose(async () => {
       MarkdownWebview.panel = null;
     });

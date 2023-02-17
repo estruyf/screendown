@@ -1,8 +1,10 @@
 {
   "name": "screendown",
-  "displayName": "screendown",
-  "description": "",
+  "displayName": "Screendown",
+  "description": "Screendown is an easy-to-use tool that allows you to create beautiful screenshots of your Markdown within Visual Studio Code editor content.",
+  "icon": "assets/icon-128x128.png",
   "publisher": "eliostruyf",
+  "preview": true,
   "version": "0.0.1",
   "repository": {
     "url": "https://github.com/estruyf/vscode-react-webview-template",
@@ -14,15 +16,19 @@
   "categories": [
     "Other"
   ],
+  "keywords": [
+    "markdown",
+    "screenshot",
+    "preview"
+  ],
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
-    "commands": [
-      {
-        "command": "screendown.openWebview",
-        "title": "Screendown: Take a screenshot"
-      }
-    ]
+    "commands": [{
+      "command": "screendown.openWebview",
+      "title": "Take a screenshot",
+      "category": "Screendown"
+    }]
   },
   "scripts": {
     "vscode:prepublish": "npm run package",

@@ -43,6 +43,20 @@ body {
     margin-bottom: 16px;
   }
 
+  ul {
+    padding-left: 1em;
+  }
+
+  ul li {
+    @apply py-2;
+    list-style-type: square;
+  }
+
+  ol li {
+    @apply py-2;
+    list-style-type: decimal;
+  }
+
   a, a:hover, a:visited {
     color: var(--screendown-link);
   }

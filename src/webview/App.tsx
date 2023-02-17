@@ -15,6 +15,7 @@ export type FontType = "ui" | "editor";
 
 export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChildren<IAppProps>) => {
   const divRef = React.useRef<HTMLDivElement>(null);
+  const parentRef = React.useRef<HTMLDivElement>(null);
   const screenshotRef = React.useRef<HTMLDivElement>(null);
   const [code, setCode] = React.useState<string>('');
   const [width, setWidth] = React.useState<number>(1200);
@@ -25,6 +26,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
   const [fontsize, setFontsize] = React.useState<number>(13);
   const [font, setFont] = React.useState<FontType>("editor");
   const [link, setLink] = React.useState<string>("");
+  const [outerBackground, setOuterBackground] = React.useState<string>("");
   const [loading, setLoading] = React.useState<boolean>(false);
 
   const updateWidth = (value: number) => {
@@ -70,8 +72,9 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
     
     try {
       const node = divRef.current;
+      const parentNode = parentRef.current;
       const screenshotNode = screenshotRef.current;
-      if (!node || !screenshotNode) {
+      if (!node || !screenshotNode || !parentNode) {
         return;
       }
 
@@ -80,6 +83,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
 
       node.style.transform = ``;
       node.style.transformOrigin = ``;
+      parentNode.style.height = ``;
 
       const blob = await toBlob(screenshotNode, {
         width,
@@ -88,6 +92,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
 
       node.style.transform = transform;
       node.style.transformOrigin = transformOrigin;
+      parentNode.style.height = `${height * scale}px`;
 
       if (!blob) {
         return;
@@ -102,10 +107,13 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
 
   const handleResize = () => {
     const node = divRef.current;
+    const parentNode = parentRef.current;
     const screenshotNode = screenshotRef.current;
-    if (!node || !screenshotNode) {
+    if (!node || !screenshotNode || !parentNode) {
       return;
     }
+
+    parentNode.style.height = ``;
 
     const sRect = node.parentElement?.getBoundingClientRect();
     if (!sRect) {
@@ -129,6 +137,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
     // Set the scale factor
     node.style.transform = `scale(${newScale})`;
     node.style.transformOrigin = `top left`;
+    parentNode.style.height = `${height * newScale}px`;
     setScale(newScale);
   };
 
@@ -162,7 +171,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
         }
 
         .screenshot {
-          background: var(--vscode-sideBar-background);
+          background: ${ outerBackground ? outerBackground : "var(--vscode-sideBar-background)" };
         }
       `}
       </style>
@@ -177,7 +186,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
 
       {
         code ? (
-          <div className='flex flex-col'>
+          <>
             <div className='mb-4'>
               <div className='mb-2 space-y-4'>
                 <div className='flex w-full space-x-4'>
@@ -186,15 +195,6 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
                 </div>
 
                 <div className='flex w-full space-x-4'>
-                  <SelectField
-                    label={`Scale`}
-                    value={font}
-                    options={["ui", "editor"]}
-                    placeholder={`Select font`}
-                    onChange={(value: FontType) => {
-                      setFont(value)
-                    }} />
-
                   <StringField
                     label={`Link`}
                     placeholder={`Link color (ex: #000000)`}
@@ -203,45 +203,107 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
                       setLink(value);
                     }} />
 
+                  <SelectField
+                    label={`Font`}
+                    value={font}
+                    options={["ui", "editor"]}
+                    placeholder={`Select font`}
+                    onChange={(value: FontType) => {
+                      setFont(value)
+                    }} />
+
                   <NumberField label={`Font size`} placeholder={`Enter the font-size`} value={fontsize} onChange={updateFontsize} />
                 </div>
 
                 <div className='flex w-full space-x-4'>
+                  <StringField
+                    label={`Outer background`}
+                    placeholder={`Background color (ex: #000000)`}
+                    value={outerBackground}
+                    onChange={(value: string) => {
+                      setOuterBackground(value);
+                    }} />
                   <NumberField label={`Inner width`} placeholder={`Inner width (50-100)`} value={innerWidth} onChange={setInnerWidth} step={5} min={50} max={100} />
-                  <NumberField label={`Inner padding`} placeholder={`Inner padding (1-25)`} value={innerPadding} onChange={setInnerPadding} min={1} max={25} />
+                  <NumberField label={`Inner padding`} placeholder={`Inner padding (1-25)`} value={innerPadding} onChange={setInnerPadding} min={1} max={25} step={0.25} isFloat />
                 </div>
-              </div>
-            </div>
 
-            <div ref={divRef} className='screenshot__outer mx-auto bg-white border border-[var(--vscode-panel-border)] rounded overflow-hidden h-full w-full flex justify-center items-center' style={{
-              height: `${height}px`,
-              width: `${width}px`,
-            }}>
-              <div
-                ref={screenshotRef}
-                className='screenshot flex justify-center items-center'
-                style={{
-                  height: `${height}px`,
-                  width: `${width}px`,
-                  fontFamily: font === "ui" ? "var(--vscode-font-family)" : "var(--vscode-editor-font-family)",
-                }}>
-                <div 
-                  className='screenshot__wrapper bg-transparent p-8 flex justify-center items-center' 
-                  style={{
-                    width: innerWidth ? `${innerWidth}%` : "100%",
-                  }}>
-                  <div
-                    className='screenshot__wrapper__inner flex flex-col justify-center border-0 h-full space-y-4 p-4 bg-[var(--vscode-editor-background)] shadow-lg shadow-[var(--vscode-editor-background)] rounded-lg w-fit'
-                    style={{
-                      padding: innerPadding ? `${innerPadding}em` : "2em",
-                    }}>
-                    <ReactMarkdown>
-                      {code}
-                    </ReactMarkdown>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--vscode-editor-foreground)]">
+                    Predefined backgrounds
+                  </label>
+                  <div className='mt-1 space-x-2'>
+                    <button
+                      className='h-8 w-8 rounded border border-[var(--vscode-panel-border)] hover:brightness-125' 
+                      style={{
+                        background: `radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%)`,
+                      }}
+                      onClick={() => setOuterBackground(`radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%)`)}>
+                    </button>
+                    <button
+                      className='h-8 w-8 rounded border border-[var(--vscode-panel-border)] hover:brightness-125' 
+                      style={{
+                        background: `radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)`,
+                      }}
+                      onClick={() => setOuterBackground(`radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)`)}>
+                    </button>
+                    <button
+                      className='h-8 w-8 rounded border border-[var(--vscode-panel-border)] hover:brightness-125' 
+                      style={{
+                        background: `linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12)`,
+                      }}
+                      onClick={() => setOuterBackground(`linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12)`)}>
+                    </button>
+                    <button
+                      className='h-8 w-8 rounded border border-[var(--vscode-panel-border)] hover:brightness-125' 
+                      style={{
+                        background: `linear-gradient(to right bottom, #f141a8, #ff6180, #ff9460, #ffc855, #f9f871)`,
+                      }}
+                      onClick={() => setOuterBackground(`linear-gradient(to right bottom, #f141a8, #ff6180, #ff9460, #ffc855, #f9f871)`)}>
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
+            
+            <div ref={parentRef} className='relative h-auto'>
+              <div ref={divRef} className={`screenshot__outer mx-auto border border-[var(--vscode-panel-border)] rounded-t overflow-hidden h-full w-full flex justify-center items-center ${scale < 1 ? "" : "rounded-b"}`} style={{
+                height: `${height}px`,
+                width: `${width}px`,
+              }}>
+                <div
+                  ref={screenshotRef}
+                  className='screenshot flex justify-center items-center'
+                  style={{
+                    height: `${height}px`,
+                    width: `${width}px`,
+                    fontFamily: font === "ui" ? "var(--vscode-font-family)" : "var(--vscode-editor-font-family)",
+                  }}>
+                  <div 
+                    className='screenshot__wrapper bg-transparent p-8 flex justify-center items-center' 
+                    style={{
+                      width: innerWidth ? `${innerWidth}%` : "100%",
+                    }}>
+                    <div
+                      className='screenshot__wrapper__inner flex flex-col justify-center border-0 h-full space-y-4 p-4 bg-[var(--vscode-editor-background)] shadow-lg shadow-[var(--vscode-editor-background)] rounded-lg w-fit'
+                      style={{
+                        padding: innerPadding ? `${innerPadding}em` : "2em",
+                      }}>
+                      <ReactMarkdown>
+                        {code}
+                      </ReactMarkdown>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {
+              scale < 1 && (
+                <div className='py-2 text-[var(--vscode-editorInfo-foreground)] bg-[var(--vscode-panel-border)] text-center rounded-b'>
+                  <b>Info</b>: Image got scalled to fit the screen (scale: {(scale * 100).toFixed(0)}%).
+                </div>
+              )
+            }
 
             <div className='flex justify-start'>
               <button
@@ -250,7 +312,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
                 Take screenshot
               </button>
             </div>
-          </div>
+          </>
         ) : (
           <div className='mt-24 text-2xl flex justify-center flex-col space-y-12'>
             <p>⬅</p>

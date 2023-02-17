@@ -6,7 +6,7 @@ export function activate(context: vscode.ExtensionContext) {
   ExtensionService.getInstance(context);
 
   let disposable = vscode.commands.registerCommand(
-    "vscode-react-webview-starter.openWebview",
+    "screendown.openWebview",
     () => {
       MarkdownWebview.reveal();
     }
