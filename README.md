@@ -21,7 +21,7 @@
 Screendown is a tool that allows you to take beautiful and professional-looking screenshots of your Markdown from within Visual Studio Code. With Screendown, you can easily turn your markdown text into visually stunning images that will capture the attention of your readers and followers.
 
 <p align="center">
-  <img alt="Sample image from Screendown" src="/assets/screendown-sample.png" width="600px">
+  <img alt="Sample image from Screendown" src="assets/screendown-sample.png" width="600px">
 </p>
 
 ## Usage
@@ -32,7 +32,7 @@ Screendown is a tool that allows you to take beautiful and professional-looking 
 4. Click the `Take screenshot` button
 
 <p align="center">
-  <img alt="Sample image from Screendown" src="/assets/screendown-ui.png">
+  <img alt="Sample image from Screendown" src="assets/screendown-ui.png">
 </p>
 
 ## Todo
@@ -48,5 +48,5 @@ Screendown is a tool that allows you to take beautiful and professional-looking 
 
 <p align="center">
   <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Festruyf%2Fscreendown&countColor=%230e131f&style=flat" alt="visitors" />&nbsp;
-  <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Festruyf%2Fscreendown%2Fusers&label=Usage&countColor=%230e131f&style=flat" alt="visitors" />
+  <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Festruyf%2Fscreendown%2Fusers&label=Usage&countColor=%230e131f&style=flat&readonly=true" alt="visitors" />
 </p>

@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.4] 2023-02-17
+
+- Updating readme
+
 ## [0.0.3] 2023-02-17
 
 - Fixing styling
