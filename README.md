@@ -1,15 +1,32 @@
-# Visual Studio Code Extension - React Webview Starter
+<p align="center">
+  <img alt="Screendown" src="assets/icon-128x128.png">
+</p>
 
-This is a starter template for creating a Visual Studio Code extension with a React webview.
+<h1 align="center">Screendown</h1>
 
-## Development
+Screendown is a tool that allows you to take beautiful and professional-looking screenshots of your Markdown from within Visual Studio Code. With Screendown, you can easily turn your markdown text into visually stunning images that will capture the attention of your readers and followers.
 
-- Clone this repository
-- Run `npm install` to install dependencies
-- Run `npm run watch` to start developing
+<p align="center">
+  <img alt="Sample image from Screendown" src="assets/screendown-sample.png" width="600px">
+</p>
 
 ## Usage
 
-The webview can be tested/opened by running the `React Webview: Open webview` command from the command palette.
+1. Open the command palette (Ctrl+Shift+P)
+2. Search for "Screendown: Take a screenshot"
+3. Select some Markdown text (you can also start with selecting Markdown text)
+4. Click the `Take screenshot` button
 
-![](./assets/webview.png)
+<p align="center">
+  <img alt="Sample image from Screendown" src="assets/screendown-ui.png">
+</p>
+
+## Todo
+
+- [ ] Fix UI issues
+- [ ] Open the image after creation
+- [ ] Support code snippets
+- [ ] Create predefined sizes
+  - [x] Twitter: 1200x675
+  - [ ] LinkedIn: 1200x627
+  - [ ] Youtube: 1280:720

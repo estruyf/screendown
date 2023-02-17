@@ -10,6 +10,9 @@ declare const acquireVsCodeApi: <T = unknown>() => {
 
 const elm = document.querySelector("#root");
 if (elm) {
+  document.documentElement.style.setProperty('--screendown-text', 'var(--vscode-foreground)');
+  document.documentElement.style.setProperty('--screendown-link', 'var(--vscode-textLink-foreground)');
+
   render(<App />, elm);
 }
 
