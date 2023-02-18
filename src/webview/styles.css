@@ -21,39 +21,39 @@ body {
     color: var(--screendown-text);
     font-size: 1.5em;
     font-weight: 600;
-    margin-bottom: 16px;
   }
 
   h2 {
     color: var(--screendown-text);
     font-size: 1.25em;
     font-weight: 600;
-    margin-bottom: 16px;
   }
 
   h3 {
     color: var(--screendown-text);
     font-size: 1em;
     font-weight: 600;
-    margin-bottom: 16px;
   }
 
   p {
     color: var(--screendown-text);
-    margin-bottom: 16px;
   }
 
-  ul {
+  ul, ol {
     padding-left: 1em;
+
+    li:first-child {
+      @apply -mt-2;
+    }
   }
 
   ul li {
-    @apply py-2;
+    @apply py-1;
     list-style-type: square;
   }
 
   ol li {
-    @apply py-2;
+    @apply py-1;
     list-style-type: decimal;
   }
 

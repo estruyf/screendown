@@ -24,11 +24,13 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
-    "commands": [{
-      "command": "screendown.openWebview",
-      "title": "Take a screenshot",
-      "category": "Screendown"
-    }]
+    "commands": [
+      {
+        "command": "screendown.openWebview",
+        "title": "Take a screenshot",
+        "category": "Screendown"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
@@ -73,6 +75,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.5",
+    "recoil": "^0.7.6",
     "rimraf": "^4.1.2",
     "style-loader": "^3.3.1",
     "tailwindcss": "^3.2.6",
