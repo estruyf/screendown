@@ -231,6 +231,8 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
           </div>
         )
       }
+
+      <img className='hidden' src='https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Festruyf%2Fscreendown%2Fusers&label=Usage&countColor=%230e131f' />
     </div>
   );
 };
