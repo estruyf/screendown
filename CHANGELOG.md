@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.0.5] 2023-02-18
+
+- Code refactoring
+- Added support for image presets like Twitter, LinkedIn, etc.
+
 ## [0.0.4] 2023-02-17
 
 - Updating readme
