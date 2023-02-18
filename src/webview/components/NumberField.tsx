@@ -6,11 +6,12 @@ export interface INumberFieldProps {
   value: number;
   onChange: (value: number) => void;
   isFloat?: boolean;
+  isDisabled?: boolean;
 
   [prop: string]: any; // Allow any other property
 }
 
-export const NumberField: React.FunctionComponent<INumberFieldProps> = ({ label, placeholder, value, onChange, isFloat, ...props }: React.PropsWithChildren<INumberFieldProps>) => {
+export const NumberField: React.FunctionComponent<INumberFieldProps> = ({ label, placeholder, value, onChange, isFloat, isDisabled, ...props }: React.PropsWithChildren<INumberFieldProps>) => {
   return (
     <div className='w-full'>
       <label htmlFor={label.replace(' ', '-').toLowerCase()} className="block text-sm font-medium text-[var(--vscode-editor-foreground)]">
@@ -21,8 +22,9 @@ export const NumberField: React.FunctionComponent<INumberFieldProps> = ({ label,
           type="number"
           name={label.replace(' ', '-').toLowerCase()}
           value={value}
-          className="mt-1 block w-full p-2 rounded-md border-[var(--vscode-panel-border)] bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] shadow-sm sm:text-sm focus:outline-[var(--vscode-focusBorder)] focus:outline-1"
+          className="mt-1 block w-full p-2 rounded-md border-[var(--vscode-panel-border)] bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] shadow-sm sm:text-sm focus:outline-[var(--vscode-focusBorder)] focus:outline-1 disabled:opacity-75"
           placeholder={placeholder}
+          disabled={isDisabled}
           onChange={(e) => {
             const value = isFloat ? parseFloat(e.target.value) : parseInt(e.target.value, 10);
             if (value) {

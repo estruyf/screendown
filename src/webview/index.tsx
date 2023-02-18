@@ -1,6 +1,7 @@
 import * as React from "react";
 import { render } from "react-dom";
 import { App } from "./App";
+import { RecoilRoot } from "recoil";
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -13,7 +14,7 @@ if (elm) {
   document.documentElement.style.setProperty('--screendown-text', 'var(--vscode-foreground)');
   document.documentElement.style.setProperty('--screendown-link', 'var(--vscode-textLink-foreground)');
 
-  render(<App />, elm);
+  render(<RecoilRoot><App /></RecoilRoot>, elm);
 }
 
 // Webpack HMR

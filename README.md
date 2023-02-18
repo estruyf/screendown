@@ -37,14 +37,13 @@ Screendown is a tool that allows you to take beautiful and professional-looking 
 
 ## Todo
 
-- [ ] Fix UI issues
+- [x] Fix UI issues
+- [x] Create predefined sizes
 - [ ] Open the image after creation
 - [ ] Support code snippets
-- [ ] Create predefined sizes
-  - [x] Twitter: 1200x675
-  - [ ] LinkedIn: 1200x627
-  - [ ] Youtube: 1280:720
 
+<br />
+<br />
 
 <p align="center">
   <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Festruyf%2Fscreendown&countColor=%230e131f&style=flat" alt="visitors" />&nbsp;
