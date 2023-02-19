@@ -7,6 +7,7 @@ body {
 }
 
 .screenshot__outer {
+  background-color: white;
   background-image: linear-gradient(45deg, #80808045 25%, transparent 25%), linear-gradient(-45deg, #80808045 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #80808045 75%), linear-gradient(-45deg, transparent 75%, #80808045 75%);
   background-size: 20px 20px;
   background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
@@ -60,4 +61,28 @@ body {
   a, a:hover, a:visited {
     color: var(--screendown-link);
   }
+}
+
+.gradient__button.transparent {
+  background-color: white;
+  background-image: linear-gradient(45deg, #80808045 25%, transparent 25%), linear-gradient(-45deg, #80808045 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #80808045 75%), linear-gradient(-45deg, transparent 75%, #80808045 75%);
+  background-size: 10px 10px;
+  background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+}
+
+/* Range styling */
+input[type=range] {
+  -webkit-appearance: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: var(--vscode-button-background);
+}
+input[type=range]:hover::-webkit-slider-thumb,
+input[type=range]:focus::-webkit-slider-thumb {
+  background: var(--vscode-button-hoverBackground);
 }

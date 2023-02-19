@@ -11,4 +11,5 @@ export interface ScreenshotDetails {
 
   innerWidth: number;
   innerPadding: number;
+  innerBorder: number;
 }

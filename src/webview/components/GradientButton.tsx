@@ -8,9 +8,9 @@ export interface IGradientButtonProps {
 export const GradientButton: React.FunctionComponent<IGradientButtonProps> = ({value, onClick}: React.PropsWithChildren<IGradientButtonProps>) => {
   return (
     <button
-      className='h-8 w-8 rounded border border-[var(--vscode-panel-border)] hover:brightness-125' 
+      className={`${value === "transparent" ? "transparent" : "hover:brightness-125"} gradient__button h-8 w-8 rounded border border-[var(--vscode-panel-border)]`}
       style={{
-        background: value,
+        background: value === "transparent" ? undefined : value,
       }}
       onClick={onClick}>
     </button>

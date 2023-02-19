@@ -40,7 +40,9 @@ Screendown is a tool that allows you to take beautiful and professional-looking 
 - [x] Fix UI issues
 - [x] Create predefined sizes
 - [ ] Open the image after creation
+- [x] Copy to clipboard / save to project
 - [ ] Support code snippets
+- [ ] Support images
 
 <br />
 <br />

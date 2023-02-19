@@ -10,6 +10,11 @@ export const Presets = [
     height: 675,
   },
   {
+    name: "Open Graph",
+    width: 1200,
+    height: 630,
+  },
+  {
     name: "LinkedIn",
     width: 1200,
     height: 627,

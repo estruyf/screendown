@@ -9,20 +9,22 @@ import { FormControl } from './components';
 import { useRecoilValue } from 'recoil';
 import { HeightState, ScreenshotDetailsState, WidthState } from './state';
 import { Defaults } from './constants';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Styling } from './components/Styling';
+import { Checkbox } from './components/Checkbox';
 
 export interface IAppProps { }
 
 export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChildren<IAppProps>) => {
-  const divRef = React.useRef<HTMLDivElement>(null);
-  const parentRef = React.useRef<HTMLDivElement>(null);
-  const screenshotRef = React.useRef<HTMLDivElement>(null);
-  const referenceRef = React.useRef<HTMLHeadingElement>(null);
-  const [code, setCode] = React.useState<string>('');
-  const [scale, setScale] = React.useState<number>(1);
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const { fontFamily, innerPadding, innerWidth, preset } = useRecoilValue(ScreenshotDetailsState);
+  const divRef = useRef<HTMLDivElement>(null);
+  const parentRef = useRef<HTMLDivElement>(null);
+  const screenshotRef = useRef<HTMLDivElement>(null);
+  const referenceRef = useRef<HTMLHeadingElement>(null);
+  const [code, setCode] = useState<string>('');
+  const [scale, setScale] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [copyToClipboard, setCopyToClipboard] = useState<boolean>(false);
+  const { fontFamily, innerPadding, innerWidth, innerBorder } = useRecoilValue(ScreenshotDetailsState);
   const width = useRecoilValue(WidthState);
   const height = useRecoilValue(HeightState);
 
@@ -50,6 +52,15 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
   const saveImage = async (blob: Blob) => {
     messageHandler.send('saveImage', await blob.arrayBuffer());
   }
+
+  /**
+   * Unset the loading state
+   */
+  const unsetLoader = () => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 100);
+  };
 
   /**
    * Take a screenshot of the markdown
@@ -86,12 +97,19 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
         return;
       }
 
-      saveImage(blob)
-      setLoading(false);
+      if (copyToClipboard) {
+        const clipboardItem = new ClipboardItem({ [blob.type]: blob });
+        navigator.clipboard.write([clipboardItem]);
+        messageHandler.send('copied');
+      } else {
+        saveImage(blob);
+      }
+
+      unsetLoader();
     } catch(e) {
-      setLoading(false);
+      unsetLoader();
     }
-  }, [code, scale, height, width]);
+  }, [code, scale, height, width, copyToClipboard]);
 
   /**
    * Handle the resize of the window
@@ -115,8 +133,6 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
 
     // Calculate the scale factor
     const scaleWidth = Math.min(referenceNode.clientWidth / crntWidth);
-
-    console.log(scaleWidth);
 
     let newScale = 1;
     if (scaleWidth < 1) {
@@ -192,9 +208,10 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
                       width: innerWidth ? `${innerWidth}%` : "100%",
                     }}>
                     <div
-                      className='screenshot__wrapper__inner flex flex-col justify-center border-0 h-full space-y-4 p-4 bg-[var(--vscode-editor-background)] shadow-lg shadow-[var(--vscode-editor-background)] rounded-lg w-fit'
+                      className='screenshot__wrapper__inner flex flex-col justify-center border-0 h-full space-y-4 p-4 bg-[var(--vscode-editor-background)] shadow-lg shadow-[var(--vscode-editor-background)] w-fit'
                       style={{
                         padding: innerPadding ? `${innerPadding}em` : "2em",
+                        borderRadius: `${innerBorder}px`,
                       }}>
                       <ReactMarkdown>
                         {code}
@@ -215,18 +232,25 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
               )
             }
 
-            <div className='flex justify-start'>
+            <div className='mt-4 flex items-center space-x-4'>
               <button
-                className='mt-4 rounded bg-[var(--vscode-button-background)] text-[var(--vscode-button-foreground)] hover:bg-[var(--vscode-button-hoverBackground)] px-4 py-2'
+                className='rounded bg-[var(--vscode-button-background)] text-[var(--vscode-button-foreground)] hover:bg-[var(--vscode-button-hoverBackground)] px-4 py-2'
                 onClick={takeScreenshot}>
                 Take screenshot
               </button>
+
+              <div>
+                <Checkbox
+                  label='Copy to clipboard'
+                  description='Copy to the clipboard instead of storing it.'
+                  onChange={(e) => setCopyToClipboard(e)} />
+              </div>
             </div>
           </>
         ) : (
-          <div className='mt-24 text-2xl flex justify-center flex-col space-y-12'>
+          <div className='mt-24 text-xl flex justify-center flex-col space-y-12'>
             <p>⬅</p>
-            <p>⬅ Please select some Markdown content to take a screenshot</p>
+            <p>⬅ Please select some Markdown content first</p>
             <p>⬅</p>
           </div>
         )

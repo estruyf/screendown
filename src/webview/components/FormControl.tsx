@@ -56,6 +56,14 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
       setHeight(value);
     }
   }, [width])
+
+  const getBackground = useCallback(() => {
+    if (screenshotDetails.outerBackground && Gradients.includes(screenshotDetails.outerBackground)) {
+      return "";
+    }
+
+    return screenshotDetails.outerBackground || "";
+  }, [screenshotDetails.outerBackground])
   
   return (
     <div className='mb-4'>
@@ -86,14 +94,6 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
         </div>
 
         <div className='flex w-full space-x-4'>
-          <StringField
-            label={`Link`}
-            placeholder={`Link color (ex: #000000)`}
-            value={screenshotDetails.linkColor || ""}
-            onChange={(value: string) => {
-              setScreenshotDetails((prev) => ({ ...prev, linkColor: value }));
-            }} />
-
           <SelectField
             label={`Font`}
             value={screenshotDetails.fontFamily || "editor"}
@@ -106,43 +106,69 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
           <NumberField 
             label={`Font size`} 
             placeholder={`Enter the font-size`} 
-            value={screenshotDetails.fontSize || 13} 
+            value={screenshotDetails.fontSize || Defaults.fontSize} 
+            min={5}
+            max={72}
+            step={1}
+            isRange
             onChange={(value) => {
               setScreenshotDetails((prev) => ({ ...prev, fontSize: value }));
+            }} />
+
+          <StringField
+            label={`Link`}
+            placeholder={`Link color (ex: #000000)`}
+            value={screenshotDetails.linkColor || ""}
+            onChange={(value: string) => {
+              setScreenshotDetails((prev) => ({ ...prev, linkColor: value }));
             }} />
         </div>
 
         <div className='flex w-full space-x-4'>
           <StringField
-            label={`Outer background`}
+            label={`Background`}
             placeholder={`Background color (ex: #000000)`}
-            value={screenshotDetails.outerBackground || ""}
+            value={getBackground()}
             onChange={(value: string) => {
               setScreenshotDetails((prev) => ({ ...prev, outerBackground: value }));
             }} />
 
           <NumberField 
-            label={`Inner width`} 
+            label={`Element width`} 
             placeholder={`Inner width (50-100)`} 
-            value={screenshotDetails.innerWidth || 100} 
+            value={screenshotDetails.innerWidth || Defaults.innerWidth} 
             step={5} 
             min={50} 
             max={100}
+            isRange
             onChange={(value) => {
               setScreenshotDetails((prev) => ({ ...prev, innerWidth: value }));
             }} />
 
           <NumberField 
-            label={`Inner padding`} 
+            label={`Inset`} 
             placeholder={`Inner padding (1-25)`} 
-            value={screenshotDetails.innerPadding || 2} 
+            value={screenshotDetails.innerPadding || Defaults.innerPadding} 
             min={1}
             max={25}
             step={0.25} 
             onChange={(value) => {
               setScreenshotDetails((prev) => ({ ...prev, innerPadding: value }));
             }}
+            isRange
             isFloat />
+
+          <NumberField 
+            label={`Border radius`} 
+            placeholder={`Set the border radius (1-25)`} 
+            value={screenshotDetails.innerBorder < 0 ? Defaults.innerBorder : screenshotDetails.innerBorder} 
+            min={0}
+            max={100}
+            step={5}
+            isRange
+            onChange={(value) => {
+              setScreenshotDetails((prev) => ({ ...prev, innerBorder: value }));
+            }} />
         </div>
 
         <div>

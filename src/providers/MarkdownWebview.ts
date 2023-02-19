@@ -1,6 +1,6 @@
 import { MessageHandlerData } from "@estruyf/vscode";
 import { join } from "path";
-import { ExtensionContext, ExtensionMode, SaveDialogOptions, Uri, ViewColumn, Webview, WebviewPanel, window, workspace } from "vscode";
+import { commands, ExtensionContext, ExtensionMode, SaveDialogOptions, Uri, ViewColumn, Webview, WebviewPanel, window, workspace } from "vscode";
 import { ExtensionService } from "../services/ExtensionService";
 
 
@@ -55,6 +55,8 @@ export class MarkdownWebview {
             requestId,
             payload: MarkdownWebview.crntSelection,
           } as MessageHandlerData<string>);
+        } else if (command === "copied") {
+          window.showInformationMessage("Screendown: Copied to clipboard");
         } else if (command === "saveImage") {
           const options: SaveDialogOptions = {
             filters: {
@@ -70,7 +72,10 @@ export class MarkdownWebview {
 
           if (uri) {
             // ArrayBuffer to file
-            workspace.fs.writeFile(uri, Buffer.from(payload, 'base64'));
+            await workspace.fs.writeFile(uri, Buffer.from(payload, 'base64'));
+
+            commands.executeCommand('vscode.open', uri);
+            // commands.executeCommand('workbench.action.files.openFile', uri);
           }
         }
       },
