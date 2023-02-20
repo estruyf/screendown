@@ -1,21 +1,16 @@
 import * as React from 'react';
-import { messageHandler, Messenger } from '@estruyf/vscode/dist/client';
 import ReactMarkdown from 'react-markdown';
-import html2canvas from 'html2canvas';
 import rehypeRaw from "rehype-raw";
+import { messageHandler, Messenger } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
 import { domToBlob } from 'modern-screenshot';
-import { Spinner } from './components/Spinner';
-import { FormControl } from './components';
 import { useRecoilValue } from 'recoil';
 import { HeightState, ScreenshotDetailsState, WidthState } from './state';
 import { Defaults } from './constants';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Styling } from './components/Styling';
-import { Checkbox } from './components/Checkbox';
-import { Code } from './components/Code';
-import { Image } from './components/Image';
 import { CodeProps } from 'react-markdown/lib/ast-to-react';
+import { ContentData } from '../models';
+import { TitleBar, EmptyPlaceholder, Scaling, Image, Code, Checkbox, Styling, FormControl, Spinner } from './components';
 import "./styles.css";
 
 export interface IAppProps {
@@ -35,10 +30,25 @@ export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: 
   const [scale, setScale] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
   const [themeId, setThemeId] = useState<string | undefined>(undefined);
-  const [copyToClipboard, setCopyToClipboard] = useState<boolean>(false);
   const { fontFamily, innerPadding, innerWidth, innerBorder, shadow, showTitleBar, title, fontSize } = useRecoilValue(ScreenshotDetailsState);
   const width = useRecoilValue(WidthState);
   const height = useRecoilValue(HeightState);
+
+  /**
+   * Process the content from the extension host
+   * @param data 
+   */
+  const processContent = (data: ContentData) => {
+    if (data.content && data.language) {
+      if (data.language !== "markdown") {
+        setCode(`\`\`\`${data.language.toLowerCase()}
+${data.content.trim()}
+\`\`\``);
+      } else {
+        setCode(data.content.trim());
+      }
+    }
+  }
 
   /**
    * Message listener for the extension host
@@ -53,7 +63,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: 
     }
 
     if (data.command === "setMarkdown") {
-      setCode(data.payload.trim());
+      processContent(data.payload);
     }
   };
 
@@ -78,7 +88,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: 
    * Take a screenshot of the markdown
    * @returns 
    */
-  const takeScreenshot = useCallback(async () => {
+  const takeScreenshot = useCallback(async (copyToClipboard: boolean = false) => {
     setLoading(true);
 
     const node = divRef.current;
@@ -99,14 +109,14 @@ export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: 
       const blob = await domToBlob(screenshotNode, {
         width,
         height
-      }); 
+      });
 
       node.style.transform = transform;
       node.style.transformOrigin = transformOrigin;
       parentNode.style.height = `${(height || Defaults.height) * scale}px`;
 
       unsetLoader();
-      
+
       if (!blob) {
         return;
       }
@@ -118,14 +128,14 @@ export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: 
       } else {
         saveImage(blob);
       }
-    } catch(e) {
+    } catch (e) {
       node.style.transform = transform;
       node.style.transformOrigin = transformOrigin;
       parentNode.style.height = `${(height || Defaults.height) * scale}px`;
       unsetLoader();
       messageHandler.send('logError', `Failed to create the screenshot.`);
     }
-  }, [code, scale, height, width, copyToClipboard]);
+  }, [code, scale, height, width]);
 
   /**
    * Handle the resize of the window
@@ -206,7 +216,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: 
   const generateCodeBlock = (props: CodeProps) => {
     const cachedCode = codeBackup.find(c => c.original === props.children.toString());
     if (cachedCode && cachedCode.code) {
-      return <div dangerouslySetInnerHTML={{__html: cachedCode.code}} />;
+      return <div dangerouslySetInnerHTML={{ __html: cachedCode.code }} />;
     }
     return <Code themeId={themeId} extUrl={extUrl} triggerUpdate={(original: string, code: string) => {
       const findCode = codeBackup.find(c => c.original === original);
@@ -221,8 +231,8 @@ export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: 
   useEffect(() => {
     Messenger.listen(msgListener);
 
-    messageHandler.request<string>('getMarkdown').then((msg) => {
-      setCode(msg.trim());
+    messageHandler.request<ContentData>('getMarkdown').then((msg) => {
+      processContent(msg);
       setTimeout(() => {
         handleResize();
       }, 0);
@@ -242,7 +252,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: 
     <div className='p-4'>
       <Styling />
 
-      { loading && <Spinner /> }
+      {loading && <Spinner />}
 
       <h1 ref={referenceRef} className={`text-3xl mb-4`}>Screendown</h1>
 
@@ -254,7 +264,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: 
         code ? (
           <>
             <FormControl handleResize={triggerResize} />
-            
+
             <div ref={parentRef} className='relative h-auto' style={{
               height: `${(height || Defaults.height) * scale}px`,
             }}>
@@ -270,8 +280,8 @@ export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: 
                     width: `${width}px`,
                     fontFamily: fontFamily === "ui" ? "var(--vscode-font-family)" : "var(--vscode-editor-font-family)",
                   }}>
-                  <div 
-                    className='screenshot__wrapper bg-transparent p-8 flex justify-center items-center' 
+                  <div
+                    className='screenshot__wrapper bg-transparent p-8 flex justify-center items-center'
                     style={{
                       width: innerWidth ? `${innerWidth}%` : "100%",
                     }}>
@@ -280,36 +290,20 @@ export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: 
                       style={{
                         padding: innerPadding ? `${innerPadding}em` : "2em",
                         borderRadius: `${innerBorder}px`,
-                        boxShadow: `0 0 ${shadow}px ${shadow/5}px var(--vscode-editor-background)`,
+                        boxShadow: `0 0 ${shadow}px ${shadow / 5}px var(--vscode-editor-background)`,
                       }}>
+
                       {
                         showTitleBar && (
-                          <div className={`relative border-b border-[var(--vscode-titleBar-border)] p-4 flex items-center bg-[var(--vscode-titleBar-activeBackground)] text-[var(--vscode-titleBar-activeForeground)]`} style={{
-                            borderTopLeftRadius: `${innerBorder}px`,
-                            borderTopRightRadius: `${innerBorder}px`,
-                            marginLeft: `-${innerPadding}em`,
-                            marginRight: `-${innerPadding}em`,
-                            marginTop: `-${innerPadding}em`,
-                            marginBottom: `${innerPadding}em`,
-                          }}>
-                            <div className='flex space-x-2 absolute'>
-                              <div className='rounded-full h-4 w-4 bg-[#FF5F57]'></div>
-                              <div className='rounded-full h-4 w-4 bg-[#FEBC2E]'></div>
-                              <div className='rounded-full h-4 w-4 bg-[#28C840]'></div>
-                            </div>
-
-                            {
-                              title && (
-                                <div className='w-full text-lg text-center font-normal' style={{ fontSize: `${fontSize}px`}}>
-                                  {title}
-                                </div>
-                              )
-                            }
-                          </div>
+                          <TitleBar
+                            innerBorder={innerBorder}
+                            innerPadding={innerPadding}
+                            title={title}
+                            fontSize={fontSize} />
                         )
                       }
 
-                      <ReactMarkdown 
+                      <ReactMarkdown
                         rehypePlugins={[rehypeRaw]}
                         components={{
                           img: (props) => {
@@ -322,7 +316,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: 
                             return generateCodeBlock(props);
                           }
                         }}
-                        >
+                      >
                         {code}
                       </ReactMarkdown>
                     </div>
@@ -332,36 +326,25 @@ export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: 
             </div>
 
             {
-              scale < 1 && (
-                <div className='py-2 text-[var(--vscode-editorInfo-foreground)] bg-[var(--vscode-panel-border)] text-center rounded-b' style={{
-                  width: `${width * scale}px`,
-                }}>
-                  <b>Info</b>: Image got scalled to fit the screen (scale: {(scale * 100).toFixed(0)}%).
-                </div>
-              )
+              scale < 1 && <Scaling width={width} scale={scale} />
             }
 
             <div className='mt-4 flex items-center space-x-4'>
               <button
                 className='rounded bg-[var(--vscode-button-background)] text-[var(--vscode-button-foreground)] hover:bg-[var(--vscode-button-hoverBackground)] px-4 py-2'
-                onClick={takeScreenshot}>
-                Take screenshot
+                onClick={() => takeScreenshot(false)}>
+                Save to file
               </button>
 
-              <div>
-                <Checkbox
-                  label='Copy to clipboard'
-                  description='Copy to the clipboard instead of storing it.'
-                  onChange={(e) => setCopyToClipboard(e)} />
-              </div>
+              <button
+                className='rounded bg-[var(--vscode-button-background)] text-[var(--vscode-button-foreground)] hover:bg-[var(--vscode-button-hoverBackground)] px-4 py-2'
+                onClick={() => takeScreenshot(true)}>
+                Copy to clipboard
+              </button>
             </div>
           </>
         ) : (
-          <div className='mt-24 text-xl flex justify-center flex-col space-y-12'>
-            <p>⬅</p>
-            <p>⬅ Please select some Markdown content first</p>
-            <p>⬅</p>
-          </div>
+          <EmptyPlaceholder />
         )
       }
 

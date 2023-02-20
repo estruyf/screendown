@@ -38,7 +38,7 @@
       "editor/context": [
         {
           "command": "screendown.openWebview",
-          "when": "editorLangId == markdown"
+          "when": "editorHasSelection"
         }
       ]
     }
@@ -77,12 +77,8 @@
     "@vscode/test-electron": "^2.1.5",
     "autoprefixer": "^10.4.13",
     "css-loader": "^6.7.1",
-    "dom-to-image": "^2.6.0",
-    "dom-to-image-more": "^2.15.0",
     "eslint": "^8.20.0",
     "glob": "^8.0.3",
-    "html-to-image": "^1.11.11",
-    "html2canvas": "^1.4.1",
     "jsonc-parser": "^3.2.0",
     "lodash.merge": "^4.6.2",
     "mocha": "^10.0.0",

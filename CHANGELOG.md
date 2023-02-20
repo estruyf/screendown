@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.0.8] 2023-02-20
+
+- Support other file types
+- Added the title bar option
+- Added a copy to clipboard button
+
 ## [0.0.7] 2023-02-20
 
 - Added context menu item to take a screenshot

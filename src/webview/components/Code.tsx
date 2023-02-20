@@ -76,6 +76,8 @@ export const Code: React.FunctionComponent<ICodeProps> = ({ children, themeId, e
       }
     });
   }, [themeId]);
+
+  console.log(children.toString())
   
   if (!className && children) {
     return <code>{children}</code>;

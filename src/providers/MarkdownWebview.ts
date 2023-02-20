@@ -4,11 +4,13 @@ import { commands, ExtensionContext, ExtensionMode, SaveDialogOptions, Uri, View
 import { ExtensionService } from "../services/ExtensionService";
 import { getTheme } from "../utils/getTheme";
 import fetch from "node-fetch";
+import { ContentData } from "../models";
 
 
 export class MarkdownWebview {
   public static panel: WebviewPanel | null = null;
   private static crntSelection: string = "";
+  private static crntLangugage: string = "markdown";
 
   public static reveal() {
     MarkdownWebview.getSelection();
@@ -30,8 +32,11 @@ export class MarkdownWebview {
 
     MarkdownWebview.panel?.webview.postMessage({
       command: "setMarkdown",
-      payload: MarkdownWebview.crntSelection,
-    } as MessageHandlerData<string>);
+      payload: {
+        content: MarkdownWebview.crntSelection,
+        language: MarkdownWebview.crntLangugage
+      },
+    } as MessageHandlerData<ContentData>);
   }
 
   public static async open() {
@@ -55,8 +60,11 @@ export class MarkdownWebview {
           MarkdownWebview.panel?.webview.postMessage({
             command,
             requestId,
-            payload: MarkdownWebview.crntSelection,
-          } as MessageHandlerData<string>);
+            payload: {
+              content: MarkdownWebview.crntSelection,
+              language: MarkdownWebview.crntLangugage
+            },
+          } as MessageHandlerData<ContentData>);
         } else if (command === "getImageToBase64") {
           try {
             // Fetch the image and convert to base64
@@ -136,6 +144,7 @@ export class MarkdownWebview {
 
     if (text) {
       MarkdownWebview.crntSelection = text;
+      MarkdownWebview.crntLangugage = editor?.document.languageId ?? "markdown";
     }
   }
 
