@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { messageHandler, Messenger } from '@estruyf/vscode/dist/client';
 import ReactMarkdown from 'react-markdown';
-import "./styles.css";
+import html2canvas from 'html2canvas';
+import rehypeRaw from "rehype-raw";
 import { EventData } from '@estruyf/vscode/dist/models';
-import { toBlob } from 'html-to-image';
+import { domToBlob } from 'modern-screenshot';
 import { Spinner } from './components/Spinner';
 import { FormControl } from './components';
 import { useRecoilValue } from 'recoil';
@@ -12,10 +13,20 @@ import { Defaults } from './constants';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Styling } from './components/Styling';
 import { Checkbox } from './components/Checkbox';
+import { Code } from './components/Code';
+import { Image } from './components/Image';
+import { CodeProps } from 'react-markdown/lib/ast-to-react';
+import "./styles.css";
 
-export interface IAppProps { }
+export interface IAppProps {
+  webviewUrl: string;
+  extUrl: string;
+}
 
-export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChildren<IAppProps>) => {
+const codeBackup: { original: string, code: string }[] = [];
+const imageBackup: { original: string, image: string }[] = [];
+
+export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: React.PropsWithChildren<IAppProps>) => {
   const divRef = useRef<HTMLDivElement>(null);
   const parentRef = useRef<HTMLDivElement>(null);
   const screenshotRef = useRef<HTMLDivElement>(null);
@@ -23,8 +34,9 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
   const [code, setCode] = useState<string>('');
   const [scale, setScale] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
+  const [themeId, setThemeId] = useState<string | undefined>(undefined);
   const [copyToClipboard, setCopyToClipboard] = useState<boolean>(false);
-  const { fontFamily, innerPadding, innerWidth, innerBorder } = useRecoilValue(ScreenshotDetailsState);
+  const { fontFamily, innerPadding, innerWidth, innerBorder, shadow, showTitleBar, title, fontSize } = useRecoilValue(ScreenshotDetailsState);
   const width = useRecoilValue(WidthState);
   const height = useRecoilValue(HeightState);
 
@@ -68,31 +80,33 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
    */
   const takeScreenshot = useCallback(async () => {
     setLoading(true);
-    
+
+    const node = divRef.current;
+    const parentNode = parentRef.current;
+    const screenshotNode = screenshotRef.current;
+    if (!node || !screenshotNode || !parentNode) {
+      return;
+    }
+
+    const transform = node.style.transform;
+    const transformOrigin = node.style.transformOrigin;
+
+    node.style.transform = ``;
+    node.style.transformOrigin = ``;
+    parentNode.style.height = ``;
+
     try {
-      const node = divRef.current;
-      const parentNode = parentRef.current;
-      const screenshotNode = screenshotRef.current;
-      if (!node || !screenshotNode || !parentNode) {
-        return;
-      }
-
-      const transform = node.style.transform;
-      const transformOrigin = node.style.transformOrigin;
-
-      node.style.transform = ``;
-      node.style.transformOrigin = ``;
-      parentNode.style.height = ``;
-
-      const blob = await toBlob(screenshotNode, {
+      const blob = await domToBlob(screenshotNode, {
         width,
-        height,
-      });
+        height
+      }); 
 
       node.style.transform = transform;
       node.style.transformOrigin = transformOrigin;
       parentNode.style.height = `${(height || Defaults.height) * scale}px`;
 
+      unsetLoader();
+      
       if (!blob) {
         return;
       }
@@ -104,10 +118,12 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
       } else {
         saveImage(blob);
       }
-
-      unsetLoader();
     } catch(e) {
+      node.style.transform = transform;
+      node.style.transformOrigin = transformOrigin;
+      parentNode.style.height = `${(height || Defaults.height) * scale}px`;
       unsetLoader();
+      messageHandler.send('logError', `Failed to create the screenshot.`);
     }
   }, [code, scale, height, width, copyToClipboard]);
 
@@ -153,6 +169,55 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
     triggerResize(width || Defaults.width, height || Defaults.height);
   }, [width, height]);
 
+  const mutationObserver = new MutationObserver((mutationsList, observer) => {
+    getTheme();
+  });
+
+  const getTheme = () => {
+    const themeId = document.body.getAttribute("data-vscode-theme-id") || "";
+    setThemeId(themeId);
+  }
+
+  const generateImage = (props: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>) => {
+    const cachedImage = imageBackup.find(c => c.original === props.src);
+    if (cachedImage && cachedImage.image) {
+      return <img {...props} src={cachedImage.image} />;
+    }
+
+    if (props.src && props.src.startsWith("https://")) {
+      return <Image {...props} triggerUpdate={(original: string, image: string) => {
+        const findImage = imageBackup.find(c => c.original === original);
+        if (!findImage) {
+          imageBackup.push({ original, image });
+        } else {
+          findImage.image = image;
+        }
+      }} />;
+    } else if (webviewUrl && props.src) {
+      // Parse win path
+      const src = props.src.split(`\\`).join(`/`);
+      const srcJoined = `${webviewUrl}/${src.startsWith("/") ? src.substring(1) : src}`;
+      return <img {...props} src={srcJoined} />;
+    } else {
+      return null;
+    }
+  };
+
+  const generateCodeBlock = (props: CodeProps) => {
+    const cachedCode = codeBackup.find(c => c.original === props.children.toString());
+    if (cachedCode && cachedCode.code) {
+      return <div dangerouslySetInnerHTML={{__html: cachedCode.code}} />;
+    }
+    return <Code themeId={themeId} extUrl={extUrl} triggerUpdate={(original: string, code: string) => {
+      const findCode = codeBackup.find(c => c.original === original);
+      if (!findCode) {
+        codeBackup.push({ original, code });
+      } else {
+        findCode.code = code;
+      }
+    }} {...props} />;
+  };
+
   useEffect(() => {
     Messenger.listen(msgListener);
 
@@ -164,6 +229,9 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
     });
 
     window.addEventListener("resize", handleResize, false);
+
+    mutationObserver.observe(document.body, { childList: false, attributes: true });
+    getTheme();
 
     return () => {
       Messenger.unlisten(msgListener);
@@ -208,12 +276,53 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
                       width: innerWidth ? `${innerWidth}%` : "100%",
                     }}>
                     <div
-                      className='screenshot__wrapper__inner flex flex-col justify-center border-0 h-full space-y-4 p-4 bg-[var(--vscode-editor-background)] shadow-lg shadow-[var(--vscode-editor-background)] w-fit'
+                      className='screenshot__wrapper__inner flex flex-col justify-center border-0 h-full space-y-4 p-4 bg-[var(--vscode-editor-background)] w-fit'
                       style={{
                         padding: innerPadding ? `${innerPadding}em` : "2em",
                         borderRadius: `${innerBorder}px`,
+                        boxShadow: `0 0 ${shadow}px ${shadow/5}px var(--vscode-editor-background)`,
                       }}>
-                      <ReactMarkdown>
+                      {
+                        showTitleBar && (
+                          <div className={`relative border-b border-[var(--vscode-titleBar-border)] p-4 flex items-center bg-[var(--vscode-titleBar-activeBackground)] text-[var(--vscode-titleBar-activeForeground)]`} style={{
+                            borderTopLeftRadius: `${innerBorder}px`,
+                            borderTopRightRadius: `${innerBorder}px`,
+                            marginLeft: `-${innerPadding}em`,
+                            marginRight: `-${innerPadding}em`,
+                            marginTop: `-${innerPadding}em`,
+                            marginBottom: `${innerPadding}em`,
+                          }}>
+                            <div className='flex space-x-2 absolute'>
+                              <div className='rounded-full h-4 w-4 bg-[#FF5F57]'></div>
+                              <div className='rounded-full h-4 w-4 bg-[#FEBC2E]'></div>
+                              <div className='rounded-full h-4 w-4 bg-[#28C840]'></div>
+                            </div>
+
+                            {
+                              title && (
+                                <div className='w-full text-lg text-center font-normal' style={{ fontSize: `${fontSize}px`}}>
+                                  {title}
+                                </div>
+                              )
+                            }
+                          </div>
+                        )
+                      }
+
+                      <ReactMarkdown 
+                        rehypePlugins={[rehypeRaw]}
+                        components={{
+                          img: (props) => {
+                            return generateImage(props);
+                          },
+                          code: (props) => {
+                            return generateCodeBlock(props);
+                          },
+                          pre: (props) => {
+                            return generateCodeBlock(props);
+                          }
+                        }}
+                        >
                         {code}
                       </ReactMarkdown>
                     </div>

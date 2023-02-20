@@ -27,7 +27,7 @@ export const NumberField: React.FunctionComponent<INumberFieldProps> = ({ label,
   return (
     <div className='w-full'>
       <label htmlFor={label.replace(' ', '-').toLowerCase()} className="block text-sm font-medium text-[var(--vscode-editor-foreground)]">
-        {label}
+        {label} <span className='opacity-70 font-light'>({value})</span>
       </label>
       <div className="mt-1">
         <input

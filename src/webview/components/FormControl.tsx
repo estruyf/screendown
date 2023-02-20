@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { useRecoilState } from 'recoil';
 import { Defaults, Gradients, Presets } from '../constants';
 import { HeightState, ScreenshotDetailsState, WidthState } from '../state'
+import { Checkbox } from './Checkbox';
 import { GradientButton } from './GradientButton';
 import { NumberField } from './NumberField';
 import { SelectField } from './SelectField';
@@ -18,7 +19,6 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
   const [ height, setHeight ] = useRecoilState(HeightState);
 
   const presetDimensions = useMemo(() => {
-    console.log(screenshotDetails.preset);
     if (screenshotDetails.preset) {
       const preset = Presets.find((p) => p.name.toLowerCase() === screenshotDetails.preset?.toLowerCase());
 
@@ -49,7 +49,6 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
   }, [height])
 
   const updateHeight = useCallback((value: number) => {
-    console.log(value);
     if (value) {
       handleResize(width || Defaults.width, value);
 
@@ -122,9 +121,7 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
             onChange={(value: string) => {
               setScreenshotDetails((prev) => ({ ...prev, linkColor: value }));
             }} />
-        </div>
 
-        <div className='flex w-full space-x-4'>
           <StringField
             label={`Background`}
             placeholder={`Background color (ex: #000000)`}
@@ -132,7 +129,9 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
             onChange={(value: string) => {
               setScreenshotDetails((prev) => ({ ...prev, outerBackground: value }));
             }} />
+        </div>
 
+        <div className='flex w-full space-x-4'>
           <NumberField 
             label={`Element width`} 
             placeholder={`Inner width (50-100)`} 
@@ -163,26 +162,60 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
             placeholder={`Set the border radius (1-25)`} 
             value={screenshotDetails.innerBorder < 0 ? Defaults.innerBorder : screenshotDetails.innerBorder} 
             min={0}
-            max={100}
+            max={50}
             step={5}
             isRange
             onChange={(value) => {
               setScreenshotDetails((prev) => ({ ...prev, innerBorder: value }));
             }} />
+
+          <NumberField 
+            label={`Shadow`} 
+            placeholder={`Set the shadow (0-100)`} 
+            value={screenshotDetails.shadow < 0 ? Defaults.shadow : screenshotDetails.shadow} 
+            min={0}
+            max={100}
+            step={1}
+            isRange
+            onChange={(value) => {
+              setScreenshotDetails((prev) => ({ ...prev, shadow: value }));
+            }} />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-[var(--vscode-editor-foreground)]">
-            Predefined backgrounds
-          </label>
-          <div className='mt-1 space-x-2'>
+        <div className='flex space-x-8 items-center justify-between'>
+          <div className='flex space-x-4 items-center'>
+            <div className='shrink-0'>
+              <Checkbox
+                label='Show title bar'
+                onChange={(value) => setScreenshotDetails((prev) => ({ ...prev, showTitleBar: value }))} />
+            </div>
+
             {
-              Gradients.map((gradient, idx) => (
-                <GradientButton key={idx} value={gradient} onClick={() => {
-                  setScreenshotDetails((prev) => ({ ...prev, outerBackground: gradient }));
-                }} />
-              ))
+              screenshotDetails.showTitleBar && (
+                <StringField
+                  label={`Title`}
+                  placeholder={`Title for title bar`}
+                  value={screenshotDetails.title || ""}
+                  onChange={(value: string) => {
+                    setScreenshotDetails((prev) => ({ ...prev, title: value }));
+                  }} />
+              )
             }
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[var(--vscode-editor-foreground)]">
+              Predefined backgrounds
+            </label>
+            <div className='mt-1 space-x-2'>
+              {
+                Gradients.map((gradient, idx) => (
+                  <GradientButton key={idx} value={gradient} onClick={() => {
+                    setScreenshotDetails((prev) => ({ ...prev, outerBackground: gradient }));
+                  }} />
+                ))
+              }
+            </div>
           </div>
         </div>
       </div>

@@ -2,6 +2,8 @@ import { MessageHandlerData } from "@estruyf/vscode";
 import { join } from "path";
 import { commands, ExtensionContext, ExtensionMode, SaveDialogOptions, Uri, ViewColumn, Webview, WebviewPanel, window, workspace } from "vscode";
 import { ExtensionService } from "../services/ExtensionService";
+import { getTheme } from "../utils/getTheme";
+import fetch from "node-fetch";
 
 
 export class MarkdownWebview {
@@ -55,8 +57,39 @@ export class MarkdownWebview {
             requestId,
             payload: MarkdownWebview.crntSelection,
           } as MessageHandlerData<string>);
+        } else if (command === "getImageToBase64") {
+          try {
+            // Fetch the image and convert to base64
+            const response = await fetch(payload);
+            const buffer = await response.buffer();
+            const base64 = buffer.toString('base64');
+
+            const type = response.headers.get('content-type');
+
+            MarkdownWebview.panel?.webview.postMessage({
+              command,
+              requestId,
+              payload: `data:${type};base64,${base64}`
+            } as MessageHandlerData<string>);
+          } catch (e) {
+            MarkdownWebview.panel?.webview.postMessage({
+              command,
+              requestId,
+              error: `Failed to fetch image`
+            } as MessageHandlerData<string>);
+          }
+        } else if (command === "logError") {
+          window.showErrorMessage(`Screendown: ${payload}`);
         } else if (command === "copied") {
           window.showInformationMessage("Screendown: Copied to clipboard");
+        } else if (command === "getTheme") {
+          const theme = getTheme(payload);
+
+          MarkdownWebview.panel?.webview.postMessage({
+            command,
+            requestId,
+            payload: theme
+          } as MessageHandlerData<any>);
         } else if (command === "saveImage") {
           const options: SaveDialogOptions = {
             filters: {
@@ -122,17 +155,22 @@ export class MarkdownWebview {
     } else {
       scriptUrl = `${localServerUrl}/${jsFile}`;
     }
+
+    const workspaceFolder = workspace.workspaceFolders?.[0];
+    const workspacePath = workspaceFolder?.uri.fsPath;
+    const webviewUrl = workspacePath ? webview.asWebviewUri(Uri.file(workspacePath)) : "";
+    const extUrl = workspacePath ? webview.asWebviewUri(Uri.file(context.extensionPath)) : "";
   
-    return `<!DOCTYPE html>
+    return `
+    <!DOCTYPE html>
     <html lang="en">
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       ${isProduction ? `<link href="${cssUrl}" rel="stylesheet">` : ""}
-      <meta http-equiv="Content-Security-Policy" content="img-src vscode-resource: data: https:; script-src https: http:; style-src 'unsafe-inline' https: http:;" />
     </head>
     <body>
-      <div id="root"></div>
+      <div data-webview-url="${webviewUrl}" data-ext-url="${extUrl}" id="root"></div>
   
       <script src="${scriptUrl}" />
     </body>

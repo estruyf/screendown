@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.0.7] 2023-02-20
+
+- Added context menu item to take a screenshot
+- Added support for images (locally and remotely)
+- Added support for code snippets
+- Added side bar background as predefined background option
+- Added support to change the shadow
+
 ## [0.0.6] 2023-02-19
 
 - Changed `number` to `range` inputs for width, padding, and font size

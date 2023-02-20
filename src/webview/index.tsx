@@ -14,7 +14,16 @@ if (elm) {
   document.documentElement.style.setProperty('--screendown-text', 'var(--vscode-foreground)');
   document.documentElement.style.setProperty('--screendown-link', 'var(--vscode-textLink-foreground)');
 
-  render(<RecoilRoot><App /></RecoilRoot>, elm);
+  const webviewUrl = elm.getAttribute("data-webview-url") || "";
+  const extUrl = elm.getAttribute("data-ext-url") || "";
+
+  render((
+    <RecoilRoot>
+      <App
+        webviewUrl={webviewUrl} 
+        extUrl={extUrl} />
+    </RecoilRoot>
+  ), elm);
 }
 
 // Webpack HMR

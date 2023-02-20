@@ -5,7 +5,7 @@
   "icon": "assets/icon-128x128.png",
   "publisher": "eliostruyf",
   "preview": true,
-  "version": "0.0.6",
+  "version": "0.0.7",
   "repository": {
     "url": "https://github.com/estruyf/screendown",
     "type": "git"
@@ -31,10 +31,17 @@
     "commands": [
       {
         "command": "screendown.openWebview",
-        "title": "Take a screenshot",
-        "category": "Screendown"
+        "title": "Screendown: Take a screenshot"
       }
-    ]
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "screendown.openWebview",
+          "when": "editorLangId == markdown"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
@@ -57,8 +64,10 @@
     "@tailwindcss/forms": "^0.5.3",
     "@types/dom-to-image": "^2.6.4",
     "@types/glob": "^7.2.0",
+    "@types/lodash.merge": "^4.6.7",
     "@types/mocha": "^9.1.1",
     "@types/node": "16.x",
+    "@types/node-fetch": "^2.6.2",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "@types/uuid": "^8.3.4",
@@ -73,7 +82,12 @@
     "eslint": "^8.20.0",
     "glob": "^8.0.3",
     "html-to-image": "^1.11.11",
+    "html2canvas": "^1.4.1",
+    "jsonc-parser": "^3.2.0",
+    "lodash.merge": "^4.6.2",
     "mocha": "^10.0.0",
+    "modern-screenshot": "^4.3.5",
+    "node-fetch": "^2.6.9",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.21",
     "postcss-loader": "^7.0.2",
@@ -81,7 +95,9 @@
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.5",
     "recoil": "^0.7.6",
+    "rehype-raw": "^6.1.1",
     "rimraf": "^4.1.2",
+    "shiki": "^0.14.1",
     "style-loader": "^3.3.1",
     "tailwindcss": "^3.2.6",
     "ts-loader": "^9.4.1",

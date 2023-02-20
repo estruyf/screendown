@@ -4,4 +4,5 @@ export const Gradients = [
   "linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12)",
   "linear-gradient(to right bottom, #f141a8, #ff6180, #ff9460, #ffc855, #f9f871)",
   "transparent",
+  "var(--vscode-sideBar-background)",
 ];

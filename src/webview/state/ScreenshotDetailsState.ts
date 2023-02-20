@@ -11,9 +11,12 @@ export const ScreenshotDetailsState = atom<ScreenshotDetails>({
     innerWidth: Defaults.innerWidth,
     innerPadding: Defaults.innerPadding,
     innerBorder: Defaults.innerBorder,
+    shadow: Defaults.shadow,
+    outerBackground: Defaults.outerBackground,
+    showTitleBar: Defaults.showTitleBar,
+    title: undefined,
     linkColor: undefined,
     width: undefined,
     height: undefined,
-    outerBackground: undefined,
   } as ScreenshotDetails
 });

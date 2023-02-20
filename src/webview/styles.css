@@ -86,3 +86,9 @@ input[type=range]:hover::-webkit-slider-thumb,
 input[type=range]:focus::-webkit-slider-thumb {
   background: var(--vscode-button-hoverBackground);
 }
+
+code pre {
+  /* @apply border border-[var(--vscode-panel-border)] p-4 rounded-md; */
+  white-space: pre-wrap;
+  background: transparent !important;
+}

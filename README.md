@@ -26,23 +26,22 @@ Screendown is a tool that allows you to take beautiful and professional-looking 
 
 ## Usage
 
-1. Open the command palette (Ctrl+Shift+P)
-2. Search for "Screendown: Take a screenshot"
-3. Select some Markdown text (you can also start with selecting Markdown text)
-4. Click the `Take screenshot` button
+- Open the command palette (Ctrl+Shift+P)
+- Search for "Screendown: Take a screenshot"
+- Select some Markdown text (you can also start with selecting Markdown text)
 
 <p align="center">
-  <img alt="Sample image from Screendown" src="assets/screendown-ui.png">
+  <img alt="Sample image from Screendown" src="assets/screendown-ui.png" width="600px">
 </p>
 
-## Todo
+- Now you can fiddle with the settings to get the perfect image
+- Click the `Take screenshot` button
 
-- [x] Fix UI issues
-- [x] Create predefined sizes
-- [ ] Open the image after creation
-- [x] Copy to clipboard / save to project
-- [ ] Support code snippets
-- [ ] Support images
+## Issues/feedback
+
+If you encounter any issues while using Screendown or have feedback on how to enhance its functionality, please feel free to add it to the Github repository's issue list. Your contributions can help improve Screendown and make it an even better tool for everyone.
+
+[Add to our issue list](https://github.com/estruyf/screendown/issues)
 
 <br />
 <br />
