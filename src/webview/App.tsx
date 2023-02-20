@@ -36,7 +36,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: 
   const [loading, setLoading] = useState<boolean>(false);
   const [themeId, setThemeId] = useState<string | undefined>(undefined);
   const [copyToClipboard, setCopyToClipboard] = useState<boolean>(false);
-  const { fontFamily, innerPadding, innerWidth, innerBorder, shadow } = useRecoilValue(ScreenshotDetailsState);
+  const { fontFamily, innerPadding, innerWidth, innerBorder, shadow, showTitleBar, title, fontSize } = useRecoilValue(ScreenshotDetailsState);
   const width = useRecoilValue(WidthState);
   const height = useRecoilValue(HeightState);
 
@@ -282,6 +282,33 @@ export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: 
                         borderRadius: `${innerBorder}px`,
                         boxShadow: `0 0 ${shadow}px ${shadow/5}px var(--vscode-editor-background)`,
                       }}>
+                      {
+                        showTitleBar && (
+                          <div className={`relative border-b border-[var(--vscode-titleBar-border)] p-4 flex items-center bg-[var(--vscode-titleBar-activeBackground)] text-[var(--vscode-titleBar-activeForeground)]`} style={{
+                            borderTopLeftRadius: `${innerBorder}px`,
+                            borderTopRightRadius: `${innerBorder}px`,
+                            marginLeft: `-${innerPadding}em`,
+                            marginRight: `-${innerPadding}em`,
+                            marginTop: `-${innerPadding}em`,
+                            marginBottom: `${innerPadding}em`,
+                          }}>
+                            <div className='flex space-x-2 absolute'>
+                              <div className='rounded-full h-4 w-4 bg-[#FF5F57]'></div>
+                              <div className='rounded-full h-4 w-4 bg-[#FEBC2E]'></div>
+                              <div className='rounded-full h-4 w-4 bg-[#28C840]'></div>
+                            </div>
+
+                            {
+                              title && (
+                                <div className='w-full text-lg text-center font-normal' style={{ fontSize: `${fontSize}px`}}>
+                                  {title}
+                                </div>
+                              )
+                            }
+                          </div>
+                        )
+                      }
+
                       <ReactMarkdown 
                         rehypePlugins={[rehypeRaw]}
                         components={{

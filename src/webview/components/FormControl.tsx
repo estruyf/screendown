@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { useRecoilState } from 'recoil';
 import { Defaults, Gradients, Presets } from '../constants';
 import { HeightState, ScreenshotDetailsState, WidthState } from '../state'
+import { Checkbox } from './Checkbox';
 import { GradientButton } from './GradientButton';
 import { NumberField } from './NumberField';
 import { SelectField } from './SelectField';
@@ -181,18 +182,40 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
             }} />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-[var(--vscode-editor-foreground)]">
-            Predefined backgrounds
-          </label>
-          <div className='mt-1 space-x-2'>
+        <div className='flex space-x-8 items-center justify-between'>
+          <div className='flex space-x-4 items-center'>
+            <div className='shrink-0'>
+              <Checkbox
+                label='Show title bar'
+                onChange={(value) => setScreenshotDetails((prev) => ({ ...prev, showTitleBar: value }))} />
+            </div>
+
             {
-              Gradients.map((gradient, idx) => (
-                <GradientButton key={idx} value={gradient} onClick={() => {
-                  setScreenshotDetails((prev) => ({ ...prev, outerBackground: gradient }));
-                }} />
-              ))
+              screenshotDetails.showTitleBar && (
+                <StringField
+                  label={`Title`}
+                  placeholder={`Title for title bar`}
+                  value={screenshotDetails.title || ""}
+                  onChange={(value: string) => {
+                    setScreenshotDetails((prev) => ({ ...prev, title: value }));
+                  }} />
+              )
             }
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[var(--vscode-editor-foreground)]">
+              Predefined backgrounds
+            </label>
+            <div className='mt-1 space-x-2'>
+              {
+                Gradients.map((gradient, idx) => (
+                  <GradientButton key={idx} value={gradient} onClick={() => {
+                    setScreenshotDetails((prev) => ({ ...prev, outerBackground: gradient }));
+                  }} />
+                ))
+              }
+            </div>
           </div>
         </div>
       </div>

@@ -9,4 +9,5 @@ export const Defaults = {
   height: 675,
   shadow: 25,
   outerBackground: Gradients[3],
+  showTitleBar: false,
 }
