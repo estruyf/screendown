@@ -36,7 +36,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: 
   const [loading, setLoading] = useState<boolean>(false);
   const [themeId, setThemeId] = useState<string | undefined>(undefined);
   const [copyToClipboard, setCopyToClipboard] = useState<boolean>(false);
-  const { fontFamily, innerPadding, innerWidth, innerBorder } = useRecoilValue(ScreenshotDetailsState);
+  const { fontFamily, innerPadding, innerWidth, innerBorder, shadow } = useRecoilValue(ScreenshotDetailsState);
   const width = useRecoilValue(WidthState);
   const height = useRecoilValue(HeightState);
 
@@ -276,10 +276,11 @@ export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: 
                       width: innerWidth ? `${innerWidth}%` : "100%",
                     }}>
                     <div
-                      className='screenshot__wrapper__inner flex flex-col justify-center border-0 h-full space-y-4 p-4 bg-[var(--vscode-editor-background)] shadow-lg shadow-[var(--vscode-editor-background)] w-fit'
+                      className='screenshot__wrapper__inner flex flex-col justify-center border-0 h-full space-y-4 p-4 bg-[var(--vscode-editor-background)] w-fit'
                       style={{
                         padding: innerPadding ? `${innerPadding}em` : "2em",
                         borderRadius: `${innerBorder}px`,
+                        boxShadow: `0 0 ${shadow}px ${shadow/5}px var(--vscode-editor-background)`,
                       }}>
                       <ReactMarkdown 
                         rehypePlugins={[rehypeRaw]}

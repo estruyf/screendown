@@ -120,9 +120,7 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
             onChange={(value: string) => {
               setScreenshotDetails((prev) => ({ ...prev, linkColor: value }));
             }} />
-        </div>
 
-        <div className='flex w-full space-x-4'>
           <StringField
             label={`Background`}
             placeholder={`Background color (ex: #000000)`}
@@ -130,7 +128,9 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
             onChange={(value: string) => {
               setScreenshotDetails((prev) => ({ ...prev, outerBackground: value }));
             }} />
+        </div>
 
+        <div className='flex w-full space-x-4'>
           <NumberField 
             label={`Element width`} 
             placeholder={`Inner width (50-100)`} 
@@ -161,11 +161,23 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
             placeholder={`Set the border radius (1-25)`} 
             value={screenshotDetails.innerBorder < 0 ? Defaults.innerBorder : screenshotDetails.innerBorder} 
             min={0}
-            max={100}
+            max={50}
             step={5}
             isRange
             onChange={(value) => {
               setScreenshotDetails((prev) => ({ ...prev, innerBorder: value }));
+            }} />
+
+          <NumberField 
+            label={`Shadow`} 
+            placeholder={`Set the shadow (0-100)`} 
+            value={screenshotDetails.shadow < 0 ? Defaults.shadow : screenshotDetails.shadow} 
+            min={0}
+            max={100}
+            step={1}
+            isRange
+            onChange={(value) => {
+              setScreenshotDetails((prev) => ({ ...prev, shadow: value }));
             }} />
         </div>
 
