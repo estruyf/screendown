@@ -18,7 +18,6 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
   const [ height, setHeight ] = useRecoilState(HeightState);
 
   const presetDimensions = useMemo(() => {
-    console.log(screenshotDetails.preset);
     if (screenshotDetails.preset) {
       const preset = Presets.find((p) => p.name.toLowerCase() === screenshotDetails.preset?.toLowerCase());
 
@@ -49,7 +48,6 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
   }, [height])
 
   const updateHeight = useCallback((value: number) => {
-    console.log(value);
     if (value) {
       handleResize(width || Defaults.width, value);
 

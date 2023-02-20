@@ -4,7 +4,8 @@
 
 - Added context menu item to take a screenshot
 - Added support for images (locally and remotely)
-
+- Added support for code snippets
+- Added side bar background as predefined background option
 
 ## [0.0.6] 2023-02-19
 
