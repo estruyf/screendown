@@ -42,7 +42,7 @@ Screendown is a tool that allows you to take beautiful and professional-looking 
 - [ ] Open the image after creation
 - [x] Copy to clipboard / save to project
 - [ ] Support code snippets
-- [ ] Support images
+- [x] Support images
 
 <br />
 <br />

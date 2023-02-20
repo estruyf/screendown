@@ -12,10 +12,13 @@ import { Defaults } from './constants';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Styling } from './components/Styling';
 import { Checkbox } from './components/Checkbox';
+import rehypeRaw from "rehype-raw";
 
-export interface IAppProps { }
+export interface IAppProps {
+  webviewUrl?: string;
+}
 
-export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChildren<IAppProps>) => {
+export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl }: React.PropsWithChildren<IAppProps>) => {
   const divRef = useRef<HTMLDivElement>(null);
   const parentRef = useRef<HTMLDivElement>(null);
   const screenshotRef = useRef<HTMLDivElement>(null);
@@ -213,7 +216,23 @@ export const App: React.FunctionComponent<IAppProps> = ({ }: React.PropsWithChil
                         padding: innerPadding ? `${innerPadding}em` : "2em",
                         borderRadius: `${innerBorder}px`,
                       }}>
-                      <ReactMarkdown>
+                      <ReactMarkdown 
+                        rehypePlugins={[rehypeRaw]}
+                        components={{
+                          img: ({node, ...props}) => {
+                            if (props.src && props.src.startsWith("https://")) {
+                              return <img {...props} />;
+                            } else if (webviewUrl && props.src) {
+                              // Parse win path
+                              const src = props.src.split(`\\`).join(`/`);
+                              const srcJoined = `${webviewUrl}/${src.startsWith("/") ? src.substring(1) : src}`;
+                              return <img {...props} src={srcJoined} />;
+                            } else {
+                              return null;
+                            }
+                          }
+                        }}
+                        >
                         {code}
                       </ReactMarkdown>
                     </div>

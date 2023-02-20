@@ -31,10 +31,17 @@
     "commands": [
       {
         "command": "screendown.openWebview",
-        "title": "Take a screenshot",
-        "category": "Screendown"
+        "title": "Screendown: Take a screenshot"
       }
-    ]
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "screendown.openWebview",
+          "when": "editorLangId == markdown"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
@@ -81,6 +88,7 @@
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.5",
     "recoil": "^0.7.6",
+    "rehype-raw": "^6.1.1",
     "rimraf": "^4.1.2",
     "style-loader": "^3.3.1",
     "tailwindcss": "^3.2.6",

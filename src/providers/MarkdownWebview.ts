@@ -122,8 +122,13 @@ export class MarkdownWebview {
     } else {
       scriptUrl = `${localServerUrl}/${jsFile}`;
     }
+
+    const workspaceFolder = workspace.workspaceFolders?.[0];
+    const workspacePath = workspaceFolder?.uri.fsPath;
+    const webviewUrl = workspacePath ? webview.asWebviewUri(Uri.file(workspacePath)) : "";
   
-    return `<!DOCTYPE html>
+    return `
+    <!DOCTYPE html>
     <html lang="en">
     <head>
       <meta charset="UTF-8">
@@ -132,7 +137,7 @@ export class MarkdownWebview {
       <meta http-equiv="Content-Security-Policy" content="img-src vscode-resource: data: https:; script-src https: http:; style-src 'unsafe-inline' https: http:;" />
     </head>
     <body>
-      <div id="root"></div>
+      <div data-webview-url="${webviewUrl}" id="root"></div>
   
       <script src="${scriptUrl}" />
     </body>
