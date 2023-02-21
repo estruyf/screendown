@@ -40,9 +40,15 @@ body {
     color: var(--screendown-text);
   }
 
-  ul, ol {
+  ul {
     padding-left: 1em;
+  }
 
+  ol {
+    padding-left: 2em;
+  }
+
+  > ul, > ol {
     li:first-child {
       @apply -mt-2;
     }
@@ -60,6 +66,19 @@ body {
 
   a, a:hover, a:visited {
     color: var(--screendown-link);
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+
+    tr {
+      border: 0 solid var(--vscode-panel-border);
+    }
+
+    th, td {
+      @apply border-b p-4;
+    }
   }
 }
 
@@ -87,8 +106,33 @@ input[type=range]:focus::-webkit-slider-thumb {
   background: var(--vscode-button-hoverBackground);
 }
 
+code, pre {
+  font-family: var(--vscode-editor-font-family) !important;
+}
+
 code pre {
   /* @apply border border-[var(--vscode-panel-border)] p-4 rounded-md; */
   white-space: pre-wrap;
   background: transparent !important;
+}
+
+blockquote {
+  @apply py-2 px-4 border-l-8 border-[var(--vscode-panel-border)] rounded-md;
+}
+
+.show__linenumbers {
+  code {
+    counter-reset: step;
+    counter-increment: step 0;
+
+    .line::before {
+      content: counter(step);
+      counter-increment: step;
+      width: 1rem;
+      margin-right: 1.5rem;
+      display: inline-block;
+      text-align: right;
+      color: var(--vscode-editorLineNumber-foreground);
+    }
+  }
 }

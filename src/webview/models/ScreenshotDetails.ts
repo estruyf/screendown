@@ -1,4 +1,5 @@
 import { FontType } from "./FontType";
+import { TitleBarType } from "./TitleBarType";
 
 export interface ScreenshotDetails {
   preset?: string;
@@ -14,6 +15,6 @@ export interface ScreenshotDetails {
   innerBorder: number;
   shadow: number;
 
-  showTitleBar: boolean;
+  titleBarType: TitleBarType;
   title?: string;
 }

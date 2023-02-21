@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.0.9] 2023-02-21
+
+- Added Windows like title bar
+- Added option to show title bar as inactive (macOS/Windows)
+- Added styles for the quoteblock
+- Added table styles
+- Fix width of inner element on small content
+- Fix code block uses VS Code editor font
+
 ## [0.0.8] 2023-02-20
 
 - Support other file types

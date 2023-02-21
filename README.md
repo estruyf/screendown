@@ -4,6 +4,8 @@
 
 <h1 align="center">Screendown</h1>
 
+<h2>📸 Capture stunning screenshots of your Markdown or code directly in Visual Studio Code with ease.</h2>
+
 <p align="center">
   <a href="https://marketplace.visualstudio.com/items?itemName=eliostruyf.screendown" title="Check it out on the Visual Studio Marketplace">
     <img src="https://vsmarketplacebadges.dev/version/eliostruyf.screendown.svg" alt="Visual Studio Marketplace" style="display: inline-block" />
@@ -18,10 +20,43 @@
   </a>
 </p>
 
-Screendown is a tool that allows you to take beautiful and professional-looking screenshots of your Markdown from within Visual Studio Code. With Screendown, you can easily turn your markdown text into visually stunning images that will capture the attention of your readers and followers.
+Screendown is a tool that allows you to take beautiful and professional-looking screenshots of your Markdown/Code from within Visual Studio Code. With Screendown, you can easily turn your markdown text or code into visually stunning images that will capture the attention of your readers and followers.
 
 <p align="center">
   <img alt="Sample image from Screendown" src="assets/screendown-sample.png" width="600px">
+</p>
+
+## Features
+
+### Markdown to screenshot
+
+By converting your Markdown to HTML, you can generate visually appealing images quickly and easily. This approach offers a convenient and efficient method for producing stunning visuals from your Markdown content.
+
+<p align="center">
+  <img alt="Sample of using Markdown" src="assets/markdown-screenshot.png" width="600px">
+</p>
+
+The following markup is supported:
+
+- Headings
+- Paragraphs
+- Lists
+- Blockquotes
+- Code blocks / inline code
+- Horizontal rules
+- Images
+- Links
+- Emphasis
+- Strong
+- Tables
+- Strikethrough
+
+### Code to screenshot
+
+When working with code, the tool will display the code within a code block and apply syntax highlighting based on your current Visual Studio Code theme.
+
+<p align="center">
+  <img alt="Sample of using Code" src="assets/code-screenshot.png" width="600px">
 </p>
 
 ## Usage

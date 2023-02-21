@@ -76,8 +76,6 @@ export const Code: React.FunctionComponent<ICodeProps> = ({ children, themeId, e
       }
     });
   }, [themeId]);
-
-  console.log(children.toString())
   
   if (!className && children) {
     return <code>{children}</code>;
@@ -88,6 +86,6 @@ export const Code: React.FunctionComponent<ICodeProps> = ({ children, themeId, e
   }
 
   return (
-    <div dangerouslySetInnerHTML={{__html: code}} />
+    <div className='show__linenumbers' dangerouslySetInnerHTML={{__html: code}} />
   );
 };

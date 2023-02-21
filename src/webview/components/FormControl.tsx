@@ -2,8 +2,8 @@ import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 import { useRecoilState } from 'recoil';
 import { Defaults, Gradients, Presets } from '../constants';
+import { TitleBarNames, TitleBarType } from '../models';
 import { HeightState, ScreenshotDetailsState, WidthState } from '../state'
-import { Checkbox } from './Checkbox';
 import { GradientButton } from './GradientButton';
 import { NumberField } from './NumberField';
 import { SelectField } from './SelectField';
@@ -185,13 +185,19 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
         <div className='flex space-x-8 items-center justify-between'>
           <div className='flex space-x-4 items-center'>
             <div className='shrink-0'>
-              <Checkbox
-                label='Show title bar'
-                onChange={(value) => setScreenshotDetails((prev) => ({ ...prev, showTitleBar: value }))} />
+              <SelectField
+                label={`Title bar`}
+                value={screenshotDetails.titleBarType}
+                options={[...Object.values(TitleBarNames)]}
+                placeholder={`Select the title bar type`}
+                onChange={(value) => {
+                  setScreenshotDetails((prev) => ({ ...prev, titleBarType: value as TitleBarType }));
+                }} />
+              
             </div>
 
             {
-              screenshotDetails.showTitleBar && (
+              screenshotDetails.titleBarType !== TitleBarNames.None && (
                 <StringField
                   label={`Title`}
                   placeholder={`Title for title bar`}

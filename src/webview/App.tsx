@@ -1,6 +1,7 @@
 import * as React from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
 import { messageHandler, Messenger } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
 import { domToBlob } from 'modern-screenshot';
@@ -10,7 +11,7 @@ import { Defaults } from './constants';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CodeProps } from 'react-markdown/lib/ast-to-react';
 import { ContentData } from '../models';
-import { TitleBar, EmptyPlaceholder, Scaling, Image, Code, Checkbox, Styling, FormControl, Spinner } from './components';
+import { TitleBar, EmptyPlaceholder, Scaling, Image, Code, Styling, FormControl, Spinner } from './components';
 import "./styles.css";
 
 export interface IAppProps {
@@ -30,7 +31,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: 
   const [scale, setScale] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
   const [themeId, setThemeId] = useState<string | undefined>(undefined);
-  const { fontFamily, innerPadding, innerWidth, innerBorder, shadow, showTitleBar, title, fontSize } = useRecoilValue(ScreenshotDetailsState);
+  const { fontFamily, innerPadding, innerWidth, innerBorder, shadow, titleBarType, title, fontSize } = useRecoilValue(ScreenshotDetailsState);
   const width = useRecoilValue(WidthState);
   const height = useRecoilValue(HeightState);
 
@@ -286,25 +287,23 @@ ${data.content.trim()}
                       width: innerWidth ? `${innerWidth}%` : "100%",
                     }}>
                     <div
-                      className='screenshot__wrapper__inner flex flex-col justify-center border-0 h-full space-y-4 p-4 bg-[var(--vscode-editor-background)] w-fit'
+                      className='screenshot__wrapper__inner w-full flex flex-col justify-center border-0 h-full space-y-4 p-4 bg-[var(--vscode-editor-background)]'
                       style={{
                         padding: innerPadding ? `${innerPadding}em` : "2em",
                         borderRadius: `${innerBorder}px`,
                         boxShadow: `0 0 ${shadow}px ${shadow / 5}px var(--vscode-editor-background)`,
                       }}>
 
-                      {
-                        showTitleBar && (
-                          <TitleBar
-                            innerBorder={innerBorder}
-                            innerPadding={innerPadding}
-                            title={title}
-                            fontSize={fontSize} />
-                        )
-                      }
+                      <TitleBar
+                        barType={titleBarType}
+                        innerBorder={innerBorder}
+                        innerPadding={innerPadding}
+                        title={title}
+                        fontSize={fontSize} />
 
                       <ReactMarkdown
                         rehypePlugins={[rehypeRaw]}
+                        remarkPlugins={[remarkGfm]}
                         components={{
                           img: (props) => {
                             return generateImage(props);
