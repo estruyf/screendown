@@ -33,7 +33,7 @@ Screendown is a tool that allows you to take beautiful and professional-looking 
 By converting your Markdown to HTML, you can generate visually appealing images quickly and easily. This approach offers a convenient and efficient method for producing stunning visuals from your Markdown content.
 
 <p align="center">
-  <img alt="Sample of using Markdown" src="assets/markdown-screenshot.png" width="600px">
+  <img alt="Sample of using Markdown" src="assets/markdown-screenshot.png">
 </p>
 
 The following markup is supported:
@@ -56,7 +56,7 @@ The following markup is supported:
 When working with code, the tool will display the code within a code block and apply syntax highlighting based on your current Visual Studio Code theme.
 
 <p align="center">
-  <img alt="Sample of using Code" src="assets/code-screenshot.png" width="600px">
+  <img alt="Sample of using Code" src="assets/code-screenshot.png">
 </p>
 
 ## Usage
