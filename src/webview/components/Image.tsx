@@ -1,8 +1,6 @@
-import { messageHandler } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
-import { useCallback, useEffect, useState } from 'react';
-import { CodeProps } from 'react-markdown/lib/ast-to-react';
-import * as shiki from 'shiki';
+import { messageHandler } from '@estruyf/vscode/dist/client';
+import { useEffect, useState } from 'react';
 
 export interface IImageProps extends React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement> {
   triggerUpdate: (original: string, image: string) => void;

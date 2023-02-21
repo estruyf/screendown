@@ -56,7 +56,7 @@ ${data.content.trim()}
    * @param msg 
    * @returns 
    */
-  const msgListener = (msg: MessageEvent<EventData<any>>) => {
+  const msgListener = useCallback((msg: MessageEvent<EventData<any>>) => {
     const { data } = msg;
 
     if (!data) {
@@ -65,8 +65,10 @@ ${data.content.trim()}
 
     if (data.command === "setMarkdown") {
       processContent(data.payload);
+
+      triggerResize(width || Defaults.width, height || Defaults.height);
     }
-  };
+  }, [width, height]);
 
   /**
    * Trigger the save image command
@@ -195,23 +197,32 @@ ${data.content.trim()}
       return <img {...props} src={cachedImage.image} />;
     }
 
-    if (props.src && props.src.startsWith("https://")) {
-      return <Image {...props} triggerUpdate={(original: string, image: string) => {
-        const findImage = imageBackup.find(c => c.original === original);
-        if (!findImage) {
-          imageBackup.push({ original, image });
-        } else {
-          findImage.image = image;
-        }
-      }} />;
-    } else if (webviewUrl && props.src) {
-      // Parse win path
-      const src = props.src.split(`\\`).join(`/`);
-      const srcJoined = `${webviewUrl}/${src.startsWith("/") ? src.substring(1) : src}`;
-      return <img {...props} src={srcJoined} />;
-    } else {
-      return null;
-    }
+    return <Image {...props} triggerUpdate={(original: string, image: string) => {
+      const findImage = imageBackup.find(c => c.original === original);
+      if (!findImage) {
+        imageBackup.push({ original, image });
+      } else {
+        findImage.image = image;
+      }
+    }} />;
+
+    // if (props.src && props.src.startsWith("https://")) {
+    //   return <Image {...props} triggerUpdate={(original: string, image: string) => {
+    //     const findImage = imageBackup.find(c => c.original === original);
+    //     if (!findImage) {
+    //       imageBackup.push({ original, image });
+    //     } else {
+    //       findImage.image = image;
+    //     }
+    //   }} />;
+    // } else if (webviewUrl && props.src) {
+    //   // Parse win path
+    //   const src = props.src.split(`\\`).join(`/`);
+    //   const srcJoined = `${webviewUrl}/${src.startsWith("/") ? src.substring(1) : src}`;
+    //   return <img {...props} src={srcJoined} />;
+    // } else {
+    //   return null;
+    // }
   };
 
   const generateCodeBlock = (props: CodeProps) => {

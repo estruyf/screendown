@@ -3,8 +3,8 @@ import { join } from "path";
 import { commands, ExtensionContext, ExtensionMode, SaveDialogOptions, Uri, ViewColumn, Webview, WebviewPanel, window, workspace } from "vscode";
 import { ExtensionService } from "../services/ExtensionService";
 import { getTheme } from "../utils/getTheme";
-import fetch from "node-fetch";
 import { ContentData } from "../models";
+import { getImageToBase64 } from "../utils";
 
 
 export class MarkdownWebview {
@@ -67,17 +67,12 @@ export class MarkdownWebview {
           } as MessageHandlerData<ContentData>);
         } else if (command === "getImageToBase64") {
           try {
-            // Fetch the image and convert to base64
-            const response = await fetch(payload);
-            const buffer = await response.buffer();
-            const base64 = buffer.toString('base64');
-
-            const type = response.headers.get('content-type');
+            const base64Image = await getImageToBase64(payload);
 
             MarkdownWebview.panel?.webview.postMessage({
               command,
               requestId,
-              payload: `data:${type};base64,${base64}`
+              payload: base64Image
             } as MessageHandlerData<string>);
           } catch (e) {
             MarkdownWebview.panel?.webview.postMessage({

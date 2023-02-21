@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.0.10] 2023-02-21
+
+- Added support for reading images from other folders (absolute paths)
+- Fix resize after selecting empty text and then selecting text again
+
 ## [0.0.9] 2023-02-21
 
 - Added Windows like title bar
