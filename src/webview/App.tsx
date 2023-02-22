@@ -11,7 +11,7 @@ import { Defaults } from './constants';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CodeProps } from 'react-markdown/lib/ast-to-react';
 import { ContentData } from '../models';
-import { TitleBar, EmptyPlaceholder, Scaling, Image, Code, Styling, FormControl, Spinner, Watermark, ProfileImage } from './components';
+import { TitleBar, EmptyPlaceholder, Scaling, Image, Code, Styling, FormControl, Spinner, Watermark } from './components';
 import "./styles.css";
 
 export interface IAppProps {
@@ -335,8 +335,6 @@ ${data.content.trim()}
                     </div>
 
                     <Watermark />
-
-                    <ProfileImage />
                   </div>
                 </div>
               </div>

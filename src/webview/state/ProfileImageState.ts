@@ -6,6 +6,8 @@ export const ProfileImageState = atom<ProfileImageDetails | undefined>({
   default: {
     src: undefined,
     position: "bottom-left",
-    height: 100
+    height: 50,
+    radius: 0,
+    padding: 0,
   }
 });

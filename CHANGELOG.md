@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.12] 2023-02-22
+
+- Better profile image + watermark positioning
+
 ## [0.0.11] 2023-02-22
 
 - Add more preset options like Twitter header, LinkedIn header, etc.

@@ -380,39 +380,78 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
 
                 {
                   profileImg?.src && (
-                    <div className='flex w-full space-x-4'>
-                      <SelectField
-                        label={`Position`}
-                        value={profileImg.position || "bottom-left"}
-                        options={["bottom-left", "bottom-right", "top-left", "top-right"]}
-                        placeholder={`Select the position`}
-                        onChange={(value) => {
-                          setProfileImg((prev) => {
-                            const crntValue = Object.assign({}, prev);
-                            crntValue.position = value as ProfileImagePosition;
-                            messageHandler.send("setProfileImage", crntValue);
-                            return crntValue;
-                          });
-                        }
-                      } />
+                    <>
+                      <div className='flex w-full space-x-4'>
+                        <SelectField
+                          label={`Position`}
+                          value={profileImg.position || "bottom-left"}
+                          options={["bottom-left", "bottom-center", "bottom-right", "top-left", "top-center" , "top-right"]}
+                          placeholder={`Select the position`}
+                          onChange={(value) => {
+                            setProfileImg((prev) => {
+                              const crntValue = Object.assign({}, prev);
+                              crntValue.position = value as ProfileImagePosition;
+                              messageHandler.send("setProfileImage", crntValue);
+                              return crntValue;
+                            });
+                          }
+                        } />
 
-                      <NumberField
-                        label={`Size`}
-                        placeholder={`Size of the image`}
-                        value={profileImg.height || 100}
-                        min={10}
-                        max={100}
-                        step={1}
-                        isRange
-                        onChange={(value) => {
-                          setProfileImg((prev) => {
-                            const crntValue = Object.assign({}, prev);
-                            crntValue.height = value;
-                            messageHandler.send("setProfileImage", crntValue);
-                            return crntValue;
-                          });
-                        }} />
-                    </div>
+                        <NumberField
+                          label={`Size`}
+                          placeholder={`Size of the image`}
+                          value={profileImg.height || 100}
+                          min={10}
+                          max={200}
+                          step={1}
+                          isRange
+                          onChange={(value) => {
+                            setProfileImg((prev) => {
+                              const crntValue = Object.assign({}, prev);
+                              crntValue.height = value;
+                              messageHandler.send("setProfileImage", crntValue);
+                              return crntValue;
+                            });
+                          }} />
+                      </div>
+
+                      <div className='flex w-full space-x-4'>
+                        <NumberField
+                          label={`Image radius`}
+                          placeholder={`Radius of the image`}
+                          value={profileImg.radius || 0}
+                          min={0}
+                          max={50}
+                          step={1}
+                          isRange
+                          onChange={(value) => {
+                            setProfileImg((prev) => {
+                              const crntValue = Object.assign({}, prev);
+                              crntValue.radius = value;
+                              messageHandler.send("setProfileImage", crntValue);
+                              return crntValue;
+                            });
+                          }} />
+
+                        <NumberField
+                          label={`Image padding`}
+                          placeholder={`Padding of the image`}
+                          value={profileImg.padding || 0}
+                          min={1}
+                          max={25}
+                          step={0.25}
+                          isRange
+                          isFloat
+                          onChange={(value) => {
+                            setProfileImg((prev) => {
+                              const crntValue = Object.assign({}, prev);
+                              crntValue.padding = value;
+                              messageHandler.send("setProfileImage", crntValue);
+                              return crntValue;
+                            });
+                          }} />
+                      </div>
+                    </>
                   )
                 }
               </Disclosure.Panel>
