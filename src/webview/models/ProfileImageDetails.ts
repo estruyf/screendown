@@ -1,4 +1,7 @@
+export type ProfileImagePosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
+
 export interface ProfileImageDetails {
   src?: string;
-  position?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
+  position?: ProfileImagePosition;
+  height?: number;
 }

@@ -1,17 +1,20 @@
-import { ProfileImageDetails } from './../webview/models/ProfileImageDetails';
-import { MessageHandlerData } from "@estruyf/vscode";
-import { join } from "path";
-import { commands, ExtensionContext, ExtensionMode, SaveDialogOptions, Uri, ViewColumn, Webview, WebviewPanel, window, workspace } from "vscode";
-import { ExtensionService } from "../services/ExtensionService";
-import { getTheme } from "../utils/getTheme";
-import { ContentData } from "../models";
-import { getImageToBase64 } from "../utils";
+import { EditorHelper } from './../listeners/EditorHelper';
+import { LogHelper } from './../listeners/LogHelper';
+import { ThemeListeners } from './../listeners/ThemeListeners';
+import { FileHandlerListeners } from './../listeners/FileHandlerListeners';
+import { MessageHandlerData } from '@estruyf/vscode';
+import { join } from 'path';
+import { ExtensionContext, ExtensionMode, Uri, ViewColumn, Webview, WebviewPanel, window, workspace } from 'vscode';
+import { ExtensionService } from '../services/ExtensionService';
+import { ContentData } from '../models';
+import { StateListener } from '../listeners/StateListener';
 
 
 export class MarkdownWebview {
   public static panel: WebviewPanel | null = null;
-  private static crntSelection: string = "";
-  private static crntLangugage: string = "markdown";
+  public static isDisposed: boolean = true;
+  public static crntSelection: string = "";
+  public static crntLangugage: string = "markdown";
 
   public static reveal() {
     MarkdownWebview.getSelection();
@@ -53,103 +56,15 @@ export class MarkdownWebview {
       }
     );
 
+    MarkdownWebview.isDisposed = false;
+
     MarkdownWebview.panel.webview.onDidReceiveMessage(
       async (message) => {
-        const { command, requestId, payload } = message;
-
-        if (command === "getMarkdown") {
-          MarkdownWebview.panel?.webview.postMessage({
-            command,
-            requestId,
-            payload: {
-              content: MarkdownWebview.crntSelection,
-              language: MarkdownWebview.crntLangugage
-            },
-          } as MessageHandlerData<ContentData>);
-        } else if (command === "getImageToBase64") {
-          try {
-            const base64Image = await getImageToBase64(payload);
-
-            MarkdownWebview.panel?.webview.postMessage({
-              command,
-              requestId,
-              payload: base64Image
-            } as MessageHandlerData<string>);
-          } catch (e) {
-            MarkdownWebview.panel?.webview.postMessage({
-              command,
-              requestId,
-              error: `Failed to fetch image`
-            } as MessageHandlerData<string>);
-          }
-        } else if (command === "logError") {
-          window.showErrorMessage(`Screendown: ${payload}`);
-        } else if (command === "copied") {
-          window.showInformationMessage("Screendown: Copied to clipboard");
-        } else if (command === "getTheme") {
-          const theme = getTheme(payload);
-
-          MarkdownWebview.panel?.webview.postMessage({
-            command,
-            requestId,
-            payload: theme
-          } as MessageHandlerData<any>);
-        } else if (command === "saveImage") {
-          const options: SaveDialogOptions = {
-            filters: {
-              Images: ['png']
-            }
-          };
-
-          if (ext.workspacePath) {
-            options.defaultUri = ext.workspacePath;
-          }
-
-          const uri = await window.showSaveDialog(options)
-
-          if (uri) {
-            // ArrayBuffer to file
-            await workspace.fs.writeFile(uri, Buffer.from(payload, 'base64'));
-
-            commands.executeCommand('vscode.open', uri);
-          }
-        } else if (command === "getWindowState") {
-          const windowState = await ext.getState('screendown.windowState', "global");
-
-          MarkdownWebview.panel?.webview.postMessage({
-            command,
-            requestId,
-            payload: windowState
-          } as MessageHandlerData<any>);
-        } else if (command === "setWindowState") {
-          if (payload) {
-            ext.setState('screendown.windowState', payload, "global");
-          }
-        } else if (command === "getWatermark") {
-          const watermark = await ext.getState<string>('screendown.watermark', "global");
-
-          MarkdownWebview.panel?.webview.postMessage({
-            command,
-            requestId,
-            payload: watermark
-          } as MessageHandlerData<string>);
-        } else if (command === "setWatermark") {
-          if (payload) {
-            ext.setState('screendown.watermark', payload, "global");
-          }
-        } else if (command === "getProfileImage") {
-          const profileImage = await ext.getState<ProfileImageDetails>('screendown.profileImage', "global");
-
-          MarkdownWebview.panel?.webview.postMessage({
-            command,
-            requestId,
-            payload: profileImage || undefined
-          } as MessageHandlerData<ProfileImageDetails>);
-        } else if (command === "setProfileImage") {
-          if (payload) {
-            ext.setState('screendown.profileImage', payload, "global");
-          }
-        }
+        EditorHelper.process(message);
+        FileHandlerListeners.process(message);
+        LogHelper.process(message);
+        StateListener.process(message);
+        ThemeListeners.process(message);
       },
       undefined,
       ext.context.subscriptions
@@ -162,6 +77,7 @@ export class MarkdownWebview {
 
     MarkdownWebview.panel.onDidDispose(async () => {
       MarkdownWebview.panel = null;
+      MarkdownWebview.isDisposed = true;
     });
 
     MarkdownWebview.panel.webview.html = MarkdownWebview.getWebviewContent(ext.context, MarkdownWebview.panel.webview);

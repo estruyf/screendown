@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { Defaults, Gradients, Presets } from '../constants';
-import { ProfileImageDetails, TitleBarNames, TitleBarType, WindowState } from '../models';
+import { ProfileImageDetails, ProfileImagePosition, TitleBarNames, TitleBarType, WindowState } from '../models';
 import { HeightState, ProfileImageState, ScreenshotDetailsState, WatermarkState, WidthState } from '../state'
 import { GradientButton } from './GradientButton';
 import { NumberField } from './NumberField';
@@ -377,6 +377,44 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
                       });
                     }} />
                 </div>
+
+                {
+                  profileImg?.src && (
+                    <div className='flex w-full space-x-4'>
+                      <SelectField
+                        label={`Position`}
+                        value={profileImg.position || "bottom-left"}
+                        options={["bottom-left", "bottom-right", "top-left", "top-right"]}
+                        placeholder={`Select the position`}
+                        onChange={(value) => {
+                          setProfileImg((prev) => {
+                            const crntValue = Object.assign({}, prev);
+                            crntValue.position = value as ProfileImagePosition;
+                            messageHandler.send("setProfileImage", crntValue);
+                            return crntValue;
+                          });
+                        }
+                      } />
+
+                      <NumberField
+                        label={`Size`}
+                        placeholder={`Size of the image`}
+                        value={profileImg.height || 100}
+                        min={10}
+                        max={100}
+                        step={1}
+                        isRange
+                        onChange={(value) => {
+                          setProfileImg((prev) => {
+                            const crntValue = Object.assign({}, prev);
+                            crntValue.height = value;
+                            messageHandler.send("setProfileImage", crntValue);
+                            return crntValue;
+                          });
+                        }} />
+                    </div>
+                  )
+                }
               </Disclosure.Panel>
             </>
           )}

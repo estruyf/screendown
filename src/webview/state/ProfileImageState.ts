@@ -5,6 +5,7 @@ export const ProfileImageState = atom<ProfileImageDetails | undefined>({
   key: 'ProfileImageState',
   default: {
     src: undefined,
-    position: "bottom-left"
+    position: "bottom-left",
+    height: 100
   }
 });
