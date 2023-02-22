@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.0.11] 2023-02-22
+
+- Add more preset options like Twitter header, LinkedIn header, etc.
+- Turn line numbers on/off
+
 ## [0.0.10] 2023-02-21
 
 - Added support for reading images from other folders (absolute paths)

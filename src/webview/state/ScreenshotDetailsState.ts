@@ -5,7 +5,7 @@ import { ScreenshotDetails } from '../models'
 export const ScreenshotDetailsState = atom<ScreenshotDetails>({
   key: 'ScreenshotDetailsState',
   default: {
-    preset: 'Twitter',
+    preset: Defaults.preset,
     fontSize: Defaults.fontSize,
     fontFamily: "editor",
     innerWidth: Defaults.innerWidth,
