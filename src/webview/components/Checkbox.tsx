@@ -3,10 +3,11 @@ import * as React from 'react';
 export interface ICheckboxProps {
   label: string;
   description?: string;
+  checked: boolean;
   onChange: (value: boolean) => void;
 }
 
-export const Checkbox: React.FunctionComponent<ICheckboxProps> = ({ label, description, onChange }: React.PropsWithChildren<ICheckboxProps>) => {
+export const Checkbox: React.FunctionComponent<ICheckboxProps> = ({ label, checked, description, onChange }: React.PropsWithChildren<ICheckboxProps>) => {
   return (
     <div className="relative flex items-center">
       <div className="flex h-5 items-center">
@@ -14,6 +15,7 @@ export const Checkbox: React.FunctionComponent<ICheckboxProps> = ({ label, descr
           id={label.replace(/ /g, '-')}
           aria-describedby="comments-description"
           type="checkbox"
+          checked={checked}
           className="h-4 w-4 rounded border-[var(--vscode-checkbox-border)] text-[var(--vscode-button-background)] focus:outline-none focus:ring-0"
           onChange={(e) => onChange(e.target.checked)}
         />

@@ -13,4 +13,5 @@ export const Defaults = {
   shadow: 25,
   outerBackground: Gradients[3],
   titleBarType: TitleBarNames.None,
+  showLineNumbers: false,
 }

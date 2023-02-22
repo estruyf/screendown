@@ -20,7 +20,7 @@ export const TitleBar: React.FunctionComponent<ITitleBarProps> = ({ barType, tit
     }
   }, [barType])
 
-  if (barType === TitleBarNames.None) {
+  if (barType === TitleBarNames.None && !title) {
     return null;
   }
 

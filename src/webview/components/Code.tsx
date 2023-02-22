@@ -7,10 +7,11 @@ import * as shiki from 'shiki';
 export interface ICodeProps extends CodeProps {
   extUrl: string;
   themeId?: string;
+  showLineNumbers?: boolean;
   triggerUpdate: (original: string, code: string) => void;
 }
 
-export const Code: React.FunctionComponent<ICodeProps> = ({ children, themeId, extUrl, className, triggerUpdate }: React.PropsWithChildren<ICodeProps>) => {
+export const Code: React.FunctionComponent<ICodeProps> = ({ children, inline, showLineNumbers, themeId, extUrl, className, triggerUpdate }: React.PropsWithChildren<ICodeProps>) => {
   const [ code, setCode ] = useState('');
   const [ themeJson, setThemeJson ] = useState<any>(undefined);
 
@@ -46,18 +47,25 @@ export const Code: React.FunctionComponent<ICodeProps> = ({ children, themeId, e
           code = code.slice(0, -1);
         }
 
-        setCode(
-          highlighter.codeToHtml(code, {
-            lang: getLanguage(className)
-          })
-        );
+        const htmlCode = highlighter.codeToHtml(code, {
+          lang: getLanguage(className)
+        });
+
+        // Replace all lines
+        const lines = htmlCode.split(`\n`);
+        const newLines = lines.map((line, index) => {
+          line = line.replace(/<span class="line">/, `<div class="line"><span class="line__number">${index + 1}</span>`);
+          return line;
+        });
+        
+        setCode(newLines.join(`\n`));
       }).then(() => {
         if (location.hash) {
           location.href = location.href;
         }
       });
     }
-  }, [className, children, extUrl, themeJson]);
+  }, [className, children, extUrl, themeJson, showLineNumbers]);
   
   useEffect(() => {
     if (code) {
@@ -76,9 +84,27 @@ export const Code: React.FunctionComponent<ICodeProps> = ({ children, themeId, e
       }
     });
   }, [themeId]);
+
+  if (inline) {
+    return (
+      <code className={className}>
+        {children}
+      </code>
+    );
+  }
   
   if (!className && children) {
-    return <code>{children}</code>;
+    return (
+      <code className={`unkown__language ${showLineNumbers ? 'show__linenumbers' : ''}`}>
+        {children.toString().split(`\n`).map((line, index) => (
+          line && (
+            <div key={index} className="line">
+              {showLineNumbers && (<span className='line__number'>{index + 1}</span>)} {line}
+            </div>
+          )
+        ))}
+      </code>
+    );
   }
 
   if (!code) {
@@ -86,6 +112,6 @@ export const Code: React.FunctionComponent<ICodeProps> = ({ children, themeId, e
   }
 
   return (
-    <div className='show__linenumbers' dangerouslySetInnerHTML={{__html: code}} />
+    <div className={showLineNumbers ? 'show__linenumbers' : ''} dangerouslySetInnerHTML={{__html: code}} />
   );
 };

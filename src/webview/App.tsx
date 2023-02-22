@@ -11,7 +11,7 @@ import { Defaults } from './constants';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CodeProps } from 'react-markdown/lib/ast-to-react';
 import { ContentData } from '../models';
-import { TitleBar, EmptyPlaceholder, Scaling, Image, Code, Styling, FormControl, Spinner } from './components';
+import { TitleBar, EmptyPlaceholder, Scaling, Image, Code, Styling, FormControl, Spinner, Watermark, ProfileImage } from './components';
 import "./styles.css";
 
 export interface IAppProps {
@@ -31,7 +31,7 @@ export const App: React.FunctionComponent<IAppProps> = ({ webviewUrl, extUrl }: 
   const [scale, setScale] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
   const [themeId, setThemeId] = useState<string | undefined>(undefined);
-  const { fontFamily, innerPadding, innerWidth, innerBorder, shadow, titleBarType, title, fontSize } = useRecoilValue(ScreenshotDetailsState);
+  const { fontFamily, innerPadding, innerWidth, innerBorder, shadow, titleBarType, title, fontSize, showLineNumbers } = useRecoilValue(ScreenshotDetailsState);
   const width = useRecoilValue(WidthState);
   const height = useRecoilValue(HeightState);
 
@@ -225,20 +225,26 @@ ${data.content.trim()}
     // }
   };
 
-  const generateCodeBlock = (props: CodeProps) => {
+  const generateCodeBlock = useCallback((props: CodeProps) => {
     const cachedCode = codeBackup.find(c => c.original === props.children.toString());
     if (cachedCode && cachedCode.code) {
-      return <div dangerouslySetInnerHTML={{ __html: cachedCode.code }} />;
+      return <div className={showLineNumbers ? 'show__linenumbers' : ''} dangerouslySetInnerHTML={{ __html: cachedCode.code }} />;
     }
-    return <Code themeId={themeId} extUrl={extUrl} triggerUpdate={(original: string, code: string) => {
-      const findCode = codeBackup.find(c => c.original === original);
-      if (!findCode) {
-        codeBackup.push({ original, code });
-      } else {
-        findCode.code = code;
-      }
-    }} {...props} />;
-  };
+    return (
+      <Code 
+        themeId={themeId} 
+        extUrl={extUrl} 
+        showLineNumbers={showLineNumbers}
+        triggerUpdate={(original: string, code: string) => {
+          const findCode = codeBackup.find(c => c.original === original);
+          if (!findCode) {
+            codeBackup.push({ original, code });
+          } else {
+            findCode.code = code;
+          }
+        }} {...props} />
+    );
+  }, [codeBackup, themeId, extUrl, showLineNumbers]);
 
   useEffect(() => {
     Messenger.listen(msgListener);
@@ -293,7 +299,7 @@ ${data.content.trim()}
                     fontFamily: fontFamily === "ui" ? "var(--vscode-font-family)" : "var(--vscode-editor-font-family)",
                   }}>
                   <div
-                    className='screenshot__wrapper bg-transparent p-8 flex justify-center items-center'
+                    className='screenshot__wrapper bg-transparent p-8 flex flex-col justify-center items-center'
                     style={{
                       width: innerWidth ? `${innerWidth}%` : "100%",
                     }}>
@@ -321,15 +327,16 @@ ${data.content.trim()}
                           },
                           code: (props) => {
                             return generateCodeBlock(props);
-                          },
-                          pre: (props) => {
-                            return generateCodeBlock(props);
                           }
                         }}
                       >
                         {code}
                       </ReactMarkdown>
                     </div>
+
+                    <Watermark />
+
+                    <ProfileImage />
                   </div>
                 </div>
               </div>

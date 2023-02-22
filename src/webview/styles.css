@@ -116,23 +116,39 @@ code pre {
   background: transparent !important;
 }
 
+code.unkown__language {
+  color: var(--vscode-textPreformat-foreground) !important;
+  white-space: pre-line;
+}
+
 blockquote {
   @apply py-2 px-4 border-l-8 border-[var(--vscode-panel-border)] rounded-md;
 }
 
-.show__linenumbers {
-  code {
-    counter-reset: step;
-    counter-increment: step 0;
+.line__number {
+  display: none;
+  width: 1rem;
+  margin-right: 1.5rem;
+  text-align: right;
+  color: var(--vscode-editorLineNumber-foreground);
+}
 
-    .line::before {
-      content: counter(step);
-      counter-increment: step;
-      width: 1rem;
-      margin-right: 1.5rem;
-      display: inline-block;
-      text-align: right;
-      color: var(--vscode-editorLineNumber-foreground);
-    }
+.show__linenumbers {
+  .line__number {
+    display: inline-block;
   }
+}
+
+.config__button {
+  @apply w-full border-b border-[var(--vscode-panel-border)] py-1 px-2 mt-4 uppercase text-[var(--vscode-sideBarSectionHeader-foreground)] bg-[var(--vscode-sideBarSectionHeader-background)];
+
+  &:first-child {
+    @apply mt-0;
+  }
+}
+
+.config__panel {
+  background: var(--vscode-sideBar-background);
+  color: var(--vscode-sideBar-foreground);
+  @apply p-4;
 }

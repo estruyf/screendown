@@ -4,6 +4,11 @@
 
 - Add more preset options like Twitter header, LinkedIn header, etc.
 - Turn line numbers on/off
+- Support for normal code blocks
+- Added togglable menus for the configuration options (keeps internal state)
+- Added watermark option
+- Added option to add your profile image to the screenshot
+- Fix line numbers returning `0` on screenshot
 
 ## [0.0.10] 2023-02-21
 

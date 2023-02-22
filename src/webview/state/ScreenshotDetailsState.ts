@@ -14,6 +14,7 @@ export const ScreenshotDetailsState = atom<ScreenshotDetails>({
     shadow: Defaults.shadow,
     outerBackground: Defaults.outerBackground,
     titleBarType: Defaults.titleBarType,
+    showLineNumbers: Defaults.showLineNumbers,
     title: undefined,
     linkColor: undefined,
     width: undefined,

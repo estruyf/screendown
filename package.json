@@ -61,6 +61,8 @@
   },
   "devDependencies": {
     "@estruyf/vscode": "^1.1.0-beta.3196622",
+    "@headlessui/react": "^1.7.11",
+    "@heroicons/react": "^2.0.16",
     "@tailwindcss/forms": "^0.5.3",
     "@types/dom-to-image": "^2.6.4",
     "@types/glob": "^7.2.0",

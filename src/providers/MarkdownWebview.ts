@@ -1,3 +1,4 @@
+import { ProfileImageDetails } from './../webview/models/ProfileImageDetails';
 import { MessageHandlerData } from "@estruyf/vscode";
 import { join } from "path";
 import { commands, ExtensionContext, ExtensionMode, SaveDialogOptions, Uri, ViewColumn, Webview, WebviewPanel, window, workspace } from "vscode";
@@ -111,7 +112,42 @@ export class MarkdownWebview {
             await workspace.fs.writeFile(uri, Buffer.from(payload, 'base64'));
 
             commands.executeCommand('vscode.open', uri);
-            // commands.executeCommand('workbench.action.files.openFile', uri);
+          }
+        } else if (command === "getWindowState") {
+          const windowState = await ext.getState('screendown.windowState', "global");
+
+          MarkdownWebview.panel?.webview.postMessage({
+            command,
+            requestId,
+            payload: windowState
+          } as MessageHandlerData<any>);
+        } else if (command === "setWindowState") {
+          if (payload) {
+            ext.setState('screendown.windowState', payload, "global");
+          }
+        } else if (command === "getWatermark") {
+          const watermark = await ext.getState<string>('screendown.watermark', "global");
+
+          MarkdownWebview.panel?.webview.postMessage({
+            command,
+            requestId,
+            payload: watermark
+          } as MessageHandlerData<string>);
+        } else if (command === "setWatermark") {
+          if (payload) {
+            ext.setState('screendown.watermark', payload, "global");
+          }
+        } else if (command === "getProfileImage") {
+          const profileImage = await ext.getState<ProfileImageDetails>('screendown.profileImage', "global");
+
+          MarkdownWebview.panel?.webview.postMessage({
+            command,
+            requestId,
+            payload: profileImage || undefined
+          } as MessageHandlerData<ProfileImageDetails>);
+        } else if (command === "setProfileImage") {
+          if (payload) {
+            ext.setState('screendown.profileImage', payload, "global");
           }
         }
       },

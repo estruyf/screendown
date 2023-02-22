@@ -14,6 +14,7 @@ export interface ScreenshotDetails {
   innerPadding: number;
   innerBorder: number;
   shadow: number;
+  showLineNumbers: boolean;
 
   titleBarType: TitleBarType;
   title?: string;
