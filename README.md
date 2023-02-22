@@ -51,6 +51,14 @@ The following markup is supported:
 - Tables
 - Strikethrough
 
+### HTML to screenshot
+
+If you have HTML content, you can also use Screendown to convert it to an image. This could be useful for creating some cool banners for Twitter, LinkedIn, ...
+
+<p align="center">
+  <img alt="Sample of using HTML" src="assets/html-screenshot.png">
+</p>
+
 ### Code to screenshot
 
 When working with code, the tool will display the code within a code block and apply syntax highlighting based on your current Visual Studio Code theme.
