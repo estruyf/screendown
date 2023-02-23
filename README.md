@@ -67,6 +67,18 @@ When working with code, the tool will display the code within a code block and a
   <img alt="Sample of using Code" src="assets/code-screenshot.png">
 </p>
 
+### Watermarking
+
+You can add a watermark to your image. This can be useful for adding your name/tagline/twitter handle to the image. If you want, you can also add an image, once you do this, the watermark will be combined with the image.
+
+By default, you can place the image on the top or at the bottom, but you can also drag it around to place it wherever you want.
+
+<video muted playsinline>
+  <source src="assets/watermarking.mp4" type="video/mp4">
+</video>
+
+> **Info**: In case you want to add more lines of text, use the `\n` character to add a new line.
+
 ## Usage
 
 - Open the command palette (Ctrl+Shift+P)

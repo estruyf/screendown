@@ -9,5 +9,7 @@ export const ProfileImageState = atom<ProfileImageDetails | undefined>({
     height: 50,
     radius: 0,
     padding: 0,
+    xPosition: 0,
+    yPosition: 0,
   }
 });

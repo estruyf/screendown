@@ -7,4 +7,6 @@ export interface ProfileImageDetails {
   height?: number;
   radius?: number;
   padding?: number;
+  xPosition?: number;
+  yPosition?: number;
 }

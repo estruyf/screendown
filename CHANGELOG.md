@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.13] 2023-02-23
+
+- Added dragging support for the watermark image
+
 ## [0.0.12] 2023-02-22
 
 - Better profile image + watermark positioning

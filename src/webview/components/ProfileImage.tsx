@@ -1,49 +1,79 @@
 import * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { ProfileImageState } from '../state';
 import { Image } from '.';
+import { DndContext, useDraggable } from '@dnd-kit/core';
+import {CSS} from '@dnd-kit/utilities';
+import { messageHandler } from '@estruyf/vscode/dist/client';
 
 export interface IProfileImageProps {
   watermark?: string;
+  scale: number;
 }
 
 const imageBackup: { original: string, image: string }[] = [];
 
-export const ProfileImage: React.FunctionComponent<IProfileImageProps> = ({ watermark }: React.PropsWithChildren<IProfileImageProps>) => {
-  const profileImg = useRecoilValue(ProfileImageState);
+export const ProfileImage: React.FunctionComponent<IProfileImageProps> = ({ watermark, scale }: React.PropsWithChildren<IProfileImageProps>) => {
+  const [ profileImg, setProfileImg ] = useRecoilState(ProfileImageState);
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: 'draggable',
+  });
+
+  console.log(`transform`, transform);
+
+  const style = {
+    // Outputs `translate3d(x, y, 0)`
+    transform: CSS.Translate.toString({
+      x: (transform?.x || 0)/scale,
+      y: (transform?.y || 0)/scale,
+      scaleX: 1,
+      scaleY: 1,
+    })
+    // transform: CSS.Translate.toString(transform)
+  };
 
   const position = useMemo(() => {
-    if (!profileImg?.position || profileImg?.position === 'bottom-left') {
+    if (profileImg?.xPosition && profileImg?.yPosition) {
+      const posX = profileImg?.xPosition * scale;
+      const posY = profileImg?.yPosition * scale;
+
       return {
-        left: `${profileImg?.padding || 0}em`,
-        bottom: `${profileImg?.padding || 0}em`,
+        left: `${posX/scale}px`,
+        top: `${posY/scale}px`,
+      }
+    } else if (!profileImg?.position || profileImg?.position === 'bottom-left') {
+      return {
+        left: `1em`,
+        bottom: `1em`,
       };
     } else if (profileImg?.position === 'bottom-center') {
       return {
-        bottom: `${profileImg?.padding || 0}em`,
+        bottom: `1em`,
       };
     } else if (profileImg?.position === 'bottom-right') {
       return {
-        right: `${profileImg?.padding || 0}em`,
-        bottom: `${profileImg?.padding || 0}em`,
+        right: `1em`,
+        bottom: `1em`,
       };
     } else if (profileImg?.position === 'top-left') {
       return {
-        left: `${profileImg?.padding || 0}em`,
-        top: `${profileImg?.padding || 0}em`,
+        left: `1em`,
+        top: `1em`,
       };
     } else if (profileImg?.position === 'top-center') {
       return {
-        top: `${profileImg?.padding || 0}em`,
+        top: `1em`,
       };
     } else if (profileImg?.position === 'top-right') {
       return {
-        right: `${profileImg?.padding || 0}em`,
-        top: `${profileImg?.padding || 0}em`,
+        right: `1em`,
+        top: `1em`,
       };
     }
-  }, [profileImg?.position, profileImg?.padding]);
+
+    return {}
+  }, [profileImg?.position, profileImg?.padding, profileImg?.xPosition, profileImg?.yPosition, scale]);
 
   const watermarkElement = useMemo(() => {
     if (!watermark) {
@@ -68,14 +98,40 @@ export const ProfileImage: React.FunctionComponent<IProfileImageProps> = ({ wate
     )
   }, [watermark, profileImg?.position]);
 
+  useEffect(() => {
+    console.log('profileImg?.position', profileImg?.position, profileImg?.xPosition, profileImg?.yPosition);
+    if (profileImg?.xPosition === undefined && profileImg?.yPosition === undefined && position) {
+      const screenshotRect = document.querySelector('.screenshot')?.getBoundingClientRect();
+      const handleRect = document.querySelector('#draggable')?.getBoundingClientRect();
+      
+      if (screenshotRect && handleRect) {
+        setProfileImg((prev) => {
+          const crntValue = Object.assign({}, prev);
+          // Calculate the position of the image based on the screenshot box
+          crntValue.xPosition = -(screenshotRect.x - handleRect.x)/scale;
+          crntValue.yPosition = -(screenshotRect.y - handleRect.y)/scale;
+          messageHandler.send("setProfileImage", crntValue);
+          return crntValue;
+        });
+      }
+    }
+  }, [profileImg?.position, profileImg?.xPosition, profileImg?.yPosition, scale, position]);
+
   if (!profileImg?.src) {
     return null;
   }
   
   return (
-    <div className={`absolute flex items-center`} style={{
-      ...position,
-    }}>
+    <button 
+      id={`draggable`} 
+      ref={setNodeRef} 
+      className={`absolute flex items-center cursor-pointer`}
+      style={{
+        ...position,
+        ...style,
+      }}
+      {...listeners}
+      {...attributes}>
       {
         (watermark && (
           profileImg?.position === "top-right" || 
@@ -100,16 +156,16 @@ export const ProfileImage: React.FunctionComponent<IProfileImageProps> = ({ wate
           }
         }} />
 
-        {
-          (watermark && (
-            profileImg?.position === "top-center" ||
-            profileImg?.position === "top-left" || 
-            profileImg?.position === "bottom-center" ||
-            profileImg?.position === "bottom-left"
-          )) && (
-            <>{watermarkElement}</>
-          )
-        }
-    </div>
+      {
+        (watermark && (
+          profileImg?.position === "top-center" ||
+          profileImg?.position === "top-left" || 
+          profileImg?.position === "bottom-center" ||
+          profileImg?.position === "bottom-left"
+        )) && (
+          <>{watermarkElement}</>
+        )
+      }
+    </button>
   );
 };

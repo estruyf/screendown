@@ -60,6 +60,7 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
+    "@dnd-kit/core": "^6.0.8",
     "@estruyf/vscode": "^1.1.0-beta.3196622",
     "@headlessui/react": "^1.7.11",
     "@heroicons/react": "^2.0.16",

@@ -334,7 +334,7 @@ ${data.content.trim()}
                       </ReactMarkdown>
                     </div>
 
-                    <Watermark />
+                    <Watermark scale={scale} />
                   </div>
                 </div>
               </div>
