@@ -73,9 +73,9 @@ You can add a watermark to your image. This can be useful for adding your name/t
 
 By default, you can place the image on the top or at the bottom, but you can also drag it around to place it wherever you want.
 
-<video muted playsinline>
-  <source src="assets/watermarking.mp4" type="video/mp4">
-</video>
+<p align="center">
+  <img alt="Sample of watermarking" src="assets/watermark.gif">
+</p>
 
 > **Info**: In case you want to add more lines of text, use the `\n` character to add a new line.
 
