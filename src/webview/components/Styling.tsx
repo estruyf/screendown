@@ -5,8 +5,14 @@ import { ScreenshotDetailsState } from '../state';
 export interface IStylingProps {}
 
 export const Styling: React.FunctionComponent<IStylingProps> = (props: React.PropsWithChildren<IStylingProps>) => {
-  const { outerBackground, fontSize, linkColor } = useRecoilValue(ScreenshotDetailsState);
+  const screenshotDetails = useRecoilValue(ScreenshotDetailsState);
   
+  if (!screenshotDetails) {
+    return null;
+  }
+
+  const { fontSize, linkColor, outerBackground } = screenshotDetails;
+
   return (
     <style>
       {` 

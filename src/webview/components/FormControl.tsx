@@ -2,8 +2,8 @@ import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { Defaults, Gradients, Presets } from '../constants';
-import { ProfileImageDetails, ProfileImagePosition, TitleBarNames, TitleBarType, WindowState } from '../models';
-import { HeightState, ProfileImageState, ScreenshotDetailsState, WatermarkState, WidthState } from '../state'
+import { ProfileImageDetails, ProfileImagePosition, ScreenshotDetails, TitleBarNames, TitleBarType, WindowState } from '../models';
+import { HeightState, PresetState, ProfileImageState, ScreenshotDetailsState, ScreenshotDetaisDefaultState, WatermarkState, WidthState } from '../state'
 import { GradientButton } from './GradientButton';
 import { NumberField } from './NumberField';
 import { SelectField } from './SelectField';
@@ -13,9 +13,10 @@ import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { Checkbox } from './Checkbox';
 import { messageHandler } from '@estruyf/vscode/dist/client';
 import { WindowStateManager } from './WindowStateManager';
+import { Toggle } from './Toggle';
 
 export interface IFormControlProps {
-  handleResize: (width: number, height: number) => void;
+  handleResize: (width: number, height: number, retry?: boolean) => void;
 }
 
 export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handleResize }: React.PropsWithChildren<IFormControlProps>) => {
@@ -25,34 +26,42 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
   const [ windowState, setWindowState ] = useState<WindowState | undefined>(undefined);
   const [ watermark, setWatermark ] = useRecoilState(WatermarkState);
   const [ profileImg, setProfileImg ] = useRecoilState(ProfileImageState);
+  const [ , setPreset ] = useRecoilState(PresetState);
 
   const presetDimensions = useMemo(() => {
-    if (screenshotDetails.preset) {
+    if (screenshotDetails?.preset) {
       const preset = Presets.find((p) => p.name.toLowerCase() === screenshotDetails.preset?.toLowerCase());
 
       if (preset) {
-        if (preset.name !== "Custom") {
-          setWidth(preset.width || Defaults.width);
-          setHeight(preset.height || Defaults.height);
+        let crntWidth = preset.width || Defaults.width;
+        let crntHeight = preset.height || Defaults.height;
 
-          handleResize(preset.width || Defaults.width, preset.height || Defaults.height);
-        
-          return {
-            width: preset.width || Defaults.width,
-            height: preset.height || Defaults.height,
-          }
+        if (preset.name === "Custom") {
+          crntWidth = screenshotDetails.width || Defaults.width;
+          crntHeight = screenshotDetails.height || Defaults.height;
+        }
+
+        setWidth(crntWidth);
+        setHeight(crntHeight);
+
+        handleResize(crntWidth, crntHeight, true);
+      
+        return {
+          width: crntWidth,
+          height: crntHeight,
         }
       }
     }
 
     return undefined;
-  }, [screenshotDetails.preset]);
+  }, [screenshotDetails?.preset, screenshotDetails?.width, screenshotDetails?.height]);
 
   const updateWidth = useCallback((value: number) => {
     if (value) {
       handleResize(value, height || Defaults.height);
 
       setWidth(value);
+      updateScreenshotDetails({ width: value });
     }
   }, [height])
 
@@ -61,16 +70,39 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
       handleResize(width || Defaults.width, value);
 
       setHeight(value);
+      updateScreenshotDetails({ height: value });
     }
   }, [width])
 
   const getBackground = useCallback(() => {
-    if (screenshotDetails.outerBackground && Gradients.includes(screenshotDetails.outerBackground)) {
+    if (screenshotDetails?.outerBackground && Gradients.includes(screenshotDetails.outerBackground)) {
       return "";
     }
 
-    return screenshotDetails.outerBackground || "";
-  }, [screenshotDetails.outerBackground])
+    return screenshotDetails?.outerBackground || "";
+  }, [screenshotDetails?.outerBackground])
+
+  const updateScreenshotDetails = useCallback((value: Partial<ScreenshotDetails>) => {
+    setScreenshotDetails(prev => {
+      const prevValue = Object.assign({}, prev || ScreenshotDetaisDefaultState);
+      prevValue.name = "Custom";
+
+      // Check if the image dimensions are set
+      if (value.preset) {
+        // Set the width and height values, or remove them if known preset
+        if (value.preset === "Custom") {
+          prevValue.width = width || Defaults.width;
+          prevValue.height = height || Defaults.height;
+        } else if (value.preset !== "Custom") {
+          delete prevValue.width;
+          delete prevValue.height;
+        }
+      }
+
+      return Object.assign(prevValue, value);
+    });
+    setPreset("Custom");
+  }, [width, height, setProfileImg]);
 
   useEffect(() => {
     messageHandler.request<WindowState>("getWindowState").then((state) => {
@@ -84,7 +116,7 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
     });
   }, []);
 
-  if (windowState === undefined) {
+  if (windowState === undefined || screenshotDetails === undefined) {
     return null;
   }
   
@@ -103,12 +135,19 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
                 
                 <div className='flex w-full space-x-4'>
                   <SelectField
-                    label={`Presets`}
+                    label={`Dimensions`}
                     value={screenshotDetails.preset || "Custom"}
                     options={[...Presets.map((p) => p.name)]}
                     placeholder={`Select your preset`}
                     onChange={(value) => {
-                      setScreenshotDetails((prev) => ({ ...prev, preset: value }));
+                      // Reset the watermark image position
+                      setProfileImg((prev) => {
+                        const crntValue = Object.assign({}, prev);
+                        crntValue.xPosition = undefined;
+                        crntValue.yPosition = undefined;
+                        return crntValue;
+                      });
+                      updateScreenshotDetails({ preset: value  });
                     }} />
 
                   <NumberField 
@@ -116,14 +155,14 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
                     placeholder={`width`} 
                     value={presetDimensions?.width ? presetDimensions.width : width || Defaults.width} 
                     onChange={updateWidth}
-                    isDisabled={!!presetDimensions} />
+                    isDisabled={screenshotDetails.preset !== "Custom"} />
                     
                   <NumberField 
                     label={`Height`} 
                     placeholder={`height`} 
                     value={presetDimensions?.height ? presetDimensions.height : height || Defaults.height} 
                     onChange={updateHeight}
-                    isDisabled={!!presetDimensions} />
+                    isDisabled={screenshotDetails.preset !== "Custom"} />
                 </div>
               </Disclosure.Panel>
             </>
@@ -147,7 +186,7 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
                     options={["ui", "editor"]}
                     placeholder={`Select font`}
                     onChange={(value) => {
-                      setScreenshotDetails((prev) => ({ ...prev, fontFamily: value }));
+                      updateScreenshotDetails({ fontFamily: value  });
                     }} />
 
                   <NumberField 
@@ -159,7 +198,7 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
                     step={1}
                     isRange
                     onChange={(value) => {
-                      setScreenshotDetails((prev) => ({ ...prev, fontSize: value }));
+                      updateScreenshotDetails({ fontSize: value  });
                     }} />
 
                   <StringField
@@ -167,7 +206,7 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
                     placeholder={`Link color (ex: #000000)`}
                     value={screenshotDetails.linkColor || ""}
                     onChange={(value: string) => {
-                      setScreenshotDetails((prev) => ({ ...prev, linkColor: value }));
+                      updateScreenshotDetails({ linkColor: value  });
                     }} />
                 </div>
               </Disclosure.Panel>
@@ -195,7 +234,7 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
                     max={100}
                     isRange
                     onChange={(value) => {
-                      setScreenshotDetails((prev) => ({ ...prev, innerWidth: value }));
+                      updateScreenshotDetails({ innerWidth: value  });
                     }} />
 
                   <NumberField 
@@ -206,7 +245,7 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
                     max={25}
                     step={0.25} 
                     onChange={(value) => {
-                      setScreenshotDetails((prev) => ({ ...prev, innerPadding: value }));
+                      updateScreenshotDetails({ innerPadding: value  });
                     }}
                     isRange
                     isFloat />
@@ -222,7 +261,7 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
                     step={5}
                     isRange
                     onChange={(value) => {
-                      setScreenshotDetails((prev) => ({ ...prev, innerBorder: value }));
+                      updateScreenshotDetails({ innerBorder: value  });
                     }} />
 
                   <NumberField 
@@ -234,7 +273,7 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
                     step={1}
                     isRange
                     onChange={(value) => {
-                      setScreenshotDetails((prev) => ({ ...prev, shadow: value }));
+                      updateScreenshotDetails({ shadow: value  });
                     }} />
                 </div>
               </Disclosure.Panel>
@@ -261,7 +300,7 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
                       {
                         Gradients.map((gradient, idx) => (
                           <GradientButton key={idx} value={gradient} onClick={() => {
-                            setScreenshotDetails((prev) => ({ ...prev, outerBackground: gradient }));
+                            updateScreenshotDetails({ outerBackground: gradient  });
                           }} />
                         ))
                       }
@@ -274,7 +313,7 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
                       placeholder={`Background color (ex: #000000)`}
                       value={getBackground()}
                       onChange={(value: string) => {
-                        setScreenshotDetails((prev) => ({ ...prev, outerBackground: value }));
+                        updateScreenshotDetails({ outerBackground: value });
                       }} />
                   </div>
                 </div>
@@ -300,7 +339,7 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
                     options={[...Object.values(TitleBarNames)]}
                     placeholder={`Select the title bar type`}
                     onChange={(value) => {
-                      setScreenshotDetails((prev) => ({ ...prev, titleBarType: value as TitleBarType }));
+                      updateScreenshotDetails({ titleBarType: value as TitleBarType });
                     }} />
 
                   <StringField
@@ -308,7 +347,7 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
                     placeholder={`Title for title bar`}
                     value={screenshotDetails.title || ""}
                     onChange={(value: string) => {
-                      setScreenshotDetails((prev) => ({ ...prev, title: value }));
+                      updateScreenshotDetails({ title: value });
                     }} />
                 </div>
               </Disclosure.Panel>
@@ -331,7 +370,7 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
                     label={`Show line numbers`}
                     checked={screenshotDetails.showLineNumbers}
                     onChange={(value) => {
-                      setScreenshotDetails((prev) => ({ ...prev, showLineNumbers: value }));
+                      updateScreenshotDetails({ showLineNumbers: value });
                     }} />
                 </div>
               </Disclosure.Panel>
@@ -348,6 +387,15 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
               </Disclosure.Button>
               <Disclosure.Panel className="config__panel w-full space-y-4">
                 <WindowStateManager type={"watermarkOptionsIsOpen"} />
+
+                <div className='flex w-full space-x-4'>
+                  <Toggle
+                    label={`Show watermark`}
+                    enabled={screenshotDetails.showWatermark}
+                    onChange={(value) => {
+                      updateScreenshotDetails({ showWatermark: value });
+                    }} />
+                </div>
 
                 <div className='flex w-full space-x-4'>
                   <StringField

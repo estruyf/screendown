@@ -5,6 +5,7 @@ import { VSCodeMessage } from '../models';
 import { MarkdownWebview } from '../providers/MarkdownWebview';
 import { ExtensionService } from '../services/ExtensionService';
 import { BaseListener } from './BaseListener';
+import { ScreenshotDetails } from '../webview/models';
 
 export class StateListener extends BaseListener {
   /**
@@ -24,6 +25,12 @@ export class StateListener extends BaseListener {
       case Commands.WebviewToVscode.getProfileImage:
         StateListener.getState(msg.command, StateKeys.profileImage, undefined, msg.requestId);
         break;
+      case Commands.WebviewToVscode.getPresets:
+        StateListener.getState(msg.command, StateKeys.presets, [], msg.requestId);
+        break;
+      case Commands.WebviewToVscode.getPreset:
+        StateListener.getState(msg.command, StateKeys.preset, undefined, msg.requestId);
+        break;
 
       case Commands.WebviewToVscode.setWindowState:
         StateListener.setState(msg.payload, StateKeys.windowState);
@@ -33,6 +40,12 @@ export class StateListener extends BaseListener {
         break;
       case Commands.WebviewToVscode.setProfileImage:
         StateListener.setState(msg.payload, StateKeys.profileImage);
+        break;
+      case Commands.WebviewToVscode.setPresets:
+        StateListener.setPresets(msg.payload, StateKeys.presets);
+        break;
+      case Commands.WebviewToVscode.setPreset:
+        StateListener.setState(msg.payload, StateKeys.preset);
         break;
     }
   }
@@ -59,5 +72,27 @@ export class StateListener extends BaseListener {
 
     const ext = ExtensionService.getInstance();
     ext.setState(stateId, payload, "global");
+  }
+
+  private static async setPresets(payload: ScreenshotDetails, stateId: string) {
+    if (!payload) {
+      return;
+    }
+
+    const ext = ExtensionService.getInstance();
+    let stateData = await ext.getState<ScreenshotDetails[]>(stateId, "global");
+
+    if (!stateData) {
+      stateData = [];
+    }
+    
+    const index = stateData.findIndex((preset) => preset.name === payload.name);
+    if (index > -1) {
+      stateData[index] = payload;
+    } else {
+      stateData.push(payload);
+    }
+
+    ext.setState(stateId, stateData, "global");
   }
 }

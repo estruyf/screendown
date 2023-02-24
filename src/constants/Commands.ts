@@ -22,6 +22,11 @@ export const Commands = {
     setWatermark: "setWatermark",
     getProfileImage: "getProfileImage",
     setProfileImage: "setProfileImage",
+
+    setPresets: "setPresets",
+    getPresets: "getPresets",
+    setPreset: "setPreset",
+    getPreset: "getPreset",
   },
   VscodeToWebview: {
   }

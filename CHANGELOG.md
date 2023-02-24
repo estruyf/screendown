@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.0.14] 2023-02-24
+
+- Reset to default settings
+- Preserve the last used settings until reset is clicked
+- Added show/hide toggle for the watermark
+
 ## [0.0.13] 2023-02-23
 
 - Added dragging support for the watermark image

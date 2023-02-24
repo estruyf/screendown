@@ -38,8 +38,7 @@ export const Watermark: React.FunctionComponent<IWatermarkProps> = ({ scale }: R
           const crntValue = Object.assign({}, prev);
           crntValue.xPosition = (crntValue.xPosition || 0) + event.delta.x/scale;
           crntValue.yPosition = (crntValue.yPosition || 0) + event.delta.y/scale;
-
-          console.log(crntValue.xPosition, crntValue.yPosition);
+          
           messageHandler.send("setProfileImage", crntValue);
           return crntValue;
         });

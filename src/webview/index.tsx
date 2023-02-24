@@ -20,7 +20,7 @@ if (elm) {
   render((
     <RecoilRoot>
       <App
-        webviewUrl={webviewUrl} 
+        webviewUrl={webviewUrl}
         extUrl={extUrl} />
     </RecoilRoot>
   ), elm);

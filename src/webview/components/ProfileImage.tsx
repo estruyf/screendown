@@ -20,8 +20,6 @@ export const ProfileImage: React.FunctionComponent<IProfileImageProps> = ({ wate
     id: 'draggable',
   });
 
-  console.log(`transform`, transform);
-
   const style = {
     // Outputs `translate3d(x, y, 0)`
     transform: CSS.Translate.toString({
@@ -99,7 +97,6 @@ export const ProfileImage: React.FunctionComponent<IProfileImageProps> = ({ wate
   }, [watermark, profileImg?.position]);
 
   useEffect(() => {
-    console.log('profileImg?.position', profileImg?.position, profileImg?.xPosition, profileImg?.yPosition);
     if (profileImg?.xPosition === undefined && profileImg?.yPosition === undefined && position) {
       const screenshotRect = document.querySelector('.screenshot')?.getBoundingClientRect();
       const handleRect = document.querySelector('#draggable')?.getBoundingClientRect();

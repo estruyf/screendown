@@ -2,6 +2,7 @@ import { FontType } from "./FontType";
 import { TitleBarType } from "./TitleBarType";
 
 export interface ScreenshotDetails {
+  name: string;
   preset?: string;
   
   fontSize: number;
@@ -15,7 +16,11 @@ export interface ScreenshotDetails {
   innerBorder: number;
   shadow: number;
   showLineNumbers: boolean;
+  showWatermark: boolean;
 
   titleBarType: TitleBarType;
   title?: string;
+
+  width?: number;
+  height?: number;
 }
