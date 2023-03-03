@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.0.15] 2023-03-03
+
+- Fix an issue when no workspace/folder is opened
+- Fix word wrap for code blocks
+
 ## [0.0.14] 2023-02-24
 
 - Reset to default settings
