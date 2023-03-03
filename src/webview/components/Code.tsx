@@ -12,8 +12,8 @@ export interface ICodeProps extends CodeProps {
 }
 
 export const Code: React.FunctionComponent<ICodeProps> = ({ children, inline, showLineNumbers, themeId, extUrl, className, triggerUpdate }: React.PropsWithChildren<ICodeProps>) => {
-  const [ code, setCode ] = useState('');
-  const [ themeJson, setThemeJson ] = useState<any>(undefined);
+  const [code, setCode] = useState('');
+  const [themeJson, setThemeJson] = useState<any>(undefined);
 
   const getLanguage = (className: string) => {
     const language = className.split('-')[1];
@@ -54,10 +54,10 @@ export const Code: React.FunctionComponent<ICodeProps> = ({ children, inline, sh
         // Replace all lines
         const lines = htmlCode.split(`\n`);
         const newLines = lines.map((line, index) => {
-          line = line.replace(/<span class="line">/, `<div class="line"><span class="line__number">${index + 1}</span>`);
+          line = line.replace(/<span class="line">/, `<span class="line"><span class="line__number">${index + 1}</span>`);
           return line;
         });
-        
+
         setCode(newLines.join(`\n`));
       }).then(() => {
         if (location.hash) {
@@ -66,7 +66,7 @@ export const Code: React.FunctionComponent<ICodeProps> = ({ children, inline, sh
       });
     }
   }, [className, children, extUrl, themeJson, showLineNumbers]);
-  
+
   useEffect(() => {
     if (code) {
       triggerUpdate(children.toString(), code);
@@ -92,7 +92,7 @@ export const Code: React.FunctionComponent<ICodeProps> = ({ children, inline, sh
       </code>
     );
   }
-  
+
   if (!className && children) {
     return (
       <code className={`unkown__language ${showLineNumbers ? 'show__linenumbers' : ''}`}>
@@ -111,7 +111,8 @@ export const Code: React.FunctionComponent<ICodeProps> = ({ children, inline, sh
     return null;
   }
 
+  console.log(code);
   return (
-    <div className={showLineNumbers ? 'show__linenumbers' : ''} dangerouslySetInnerHTML={{__html: code}} />
+    <div className={`shiki ${showLineNumbers ? 'show__linenumbers' : ''}`} dangerouslySetInnerHTML={{ __html: code }} />
   );
 };

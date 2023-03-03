@@ -125,7 +125,7 @@ export class MarkdownWebview {
     const workspaceFolder = workspace.workspaceFolders?.[0];
     const workspacePath = workspaceFolder?.uri.fsPath;
     const webviewUrl = workspacePath ? webview.asWebviewUri(Uri.file(workspacePath)) : '';
-    const extUrl = workspacePath ? webview.asWebviewUri(Uri.file(context.extensionPath)) : '';
+    const extUrl = webview.asWebviewUri(Uri.file(context.extensionPath));
 
     return `
     <!DOCTYPE html>

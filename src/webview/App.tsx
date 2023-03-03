@@ -372,7 +372,8 @@ ${data.content.trim()}
                 <div
                   className="screenshot__wrapper bg-transparent p-8 flex flex-col justify-center items-center"
                   style={{
-                    width: innerWidth ? `${innerWidth}%` : '100%'
+                    width: innerWidth ? `${innerWidth}%` : '100%',
+                    maxWidth: '100%',
                   }}
                 >
                   <div
