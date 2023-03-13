@@ -1,9 +1,9 @@
-import { TitleBarNames } from "../models";
-import { Gradients } from "./Gradients";
-import { Presets } from "./Presets";
+import { TitleBarNames } from '../models';
+import { Gradients } from './Gradients';
+import { Presets } from './Presets';
 
 export const Defaults = {
-  name: "Default",
+  name: 'Default',
   preset: Presets[1].name,
   fontSize: 16,
   innerWidth: 100,
@@ -16,4 +16,8 @@ export const Defaults = {
   titleBarType: TitleBarNames.None,
   showLineNumbers: false,
   showWatermark: true,
-}
+  rotation: 0,
+  scale: 1,
+  translateX: 0,
+  translateY: 0
+};

@@ -8,7 +8,7 @@ import { domToBlob } from 'modern-screenshot';
 import { useRecoilValue } from 'recoil';
 import { HeightState, ScreenshotDetailsState, WidthState } from './state';
 import { Defaults } from './constants';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CodeProps } from 'react-markdown/lib/ast-to-react';
 import { ContentData } from '../models';
 import {
@@ -243,24 +243,6 @@ ${data.content.trim()}
         }}
       />
     );
-
-    // if (props.src && props.src.startsWith("https://")) {
-    //   return <Image {...props} triggerUpdate={(original: string, image: string) => {
-    //     const findImage = imageBackup.find(c => c.original === original);
-    //     if (!findImage) {
-    //       imageBackup.push({ original, image });
-    //     } else {
-    //       findImage.image = image;
-    //     }
-    //   }} />;
-    // } else if (webviewUrl && props.src) {
-    //   // Parse win path
-    //   const src = props.src.split(`\\`).join(`/`);
-    //   const srcJoined = `${webviewUrl}/${src.startsWith("/") ? src.substring(1) : src}`;
-    //   return <img {...props} src={srcJoined} />;
-    // } else {
-    //   return null;
-    // }
   };
 
   const generateCodeBlock = useCallback(
@@ -293,6 +275,29 @@ ${data.content.trim()}
     },
     [codeBackup, themeId, extUrl, screenshotDetails?.showLineNumbers]
   );
+
+  const innerTransform = useMemo(() => {
+    const { rotation, scale, translateX, translateY } = screenshotDetails || {};
+    const transform = [];
+
+    if (rotation) {
+      transform.push(`rotate(${rotation}deg)`);
+    }
+
+    if (scale) {
+      transform.push(`scale(${scale})`);
+    }
+
+    if (translateX) {
+      transform.push(`translateX(${translateX}%)`);
+    }
+
+    if (translateY) {
+      transform.push(`translateY(${translateY}%)`);
+    }
+
+    return transform.join(' ');
+  }, [screenshotDetails?.rotation, screenshotDetails?.scale, screenshotDetails?.translateX, screenshotDetails?.translateY]);
 
   useEffect(() => {
     window.removeEventListener('resize', handleResize, false);
@@ -384,7 +389,8 @@ ${data.content.trim()}
                         : '2em',
                       borderRadius: `${screenshotDetails.innerBorder}px`,
                       boxShadow: `0 0 ${screenshotDetails.shadow}px ${screenshotDetails.shadow / 5
-                        }px var(--vscode-editor-background)`
+                        }px var(--vscode-editor-background)`,
+                      transform: innerTransform
                     }}
                   >
                     <TitleBar

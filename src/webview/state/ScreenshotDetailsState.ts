@@ -1,14 +1,14 @@
 import { Commands } from './../../constants/Commands';
 import { Defaults } from './../constants/Defaults';
-import { atom } from "recoil";
-import { ScreenshotDetails } from '../models'
+import { atom } from 'recoil';
+import { ScreenshotDetails } from '../models';
 import { messageHandler } from '@estruyf/vscode/dist/client';
 
 export const ScreenshotDetaisDefaultState = {
   name: Defaults.name,
   preset: Defaults.preset,
   fontSize: Defaults.fontSize,
-  fontFamily: "editor",
+  fontFamily: 'editor',
   innerWidth: Defaults.innerWidth,
   innerPadding: Defaults.innerPadding,
   innerBorder: Defaults.innerBorder,
@@ -17,27 +17,31 @@ export const ScreenshotDetaisDefaultState = {
   titleBarType: Defaults.titleBarType,
   showLineNumbers: Defaults.showLineNumbers,
   showWatermark: Defaults.showWatermark,
+  rotation: Defaults.rotation,
+  scale: Defaults.scale,
+  translateX: Defaults.translateX,
+  translateY: Defaults.translateY,
   title: undefined,
   linkColor: undefined,
   width: undefined,
-  height: undefined,
+  height: undefined
 } as ScreenshotDetails;
 
 export const ScreenshotDetailsState = atom<ScreenshotDetails | undefined>({
   key: 'ScreenshotDetailsState',
   default: undefined,
   effects: [
-    ({onSet}) => {
-      onSet(data => {
+    ({ onSet }) => {
+      onSet((data) => {
         if (data) {
           if (!data.name) {
-            data.name = "Custom";
+            data.name = 'Custom';
           }
 
-          messageHandler.send(Commands.WebviewToVscode.setPresets, data)
-          messageHandler.send(Commands.WebviewToVscode.setPreset, data.name)
+          messageHandler.send(Commands.WebviewToVscode.setPresets, data);
+          messageHandler.send(Commands.WebviewToVscode.setPreset, data.name);
         }
       });
-    },
-  ],
+    }
+  ]
 });

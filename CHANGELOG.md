@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.0.16] 2023-03-13
+
+- Added rotation support
+- Added scaling support
+- Added support to move the screenshot horizontally/vertically
+
 ## [0.0.15] 2023-03-03
 
 - Fix an issue when no workspace/folder is opened
