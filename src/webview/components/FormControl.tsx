@@ -465,7 +465,7 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
                 <div className={`flex space-x-4 ${profileImg?.src ? 'w-full' : 'w-1/2'}`}>
                   <StringField
                     label={`Image (will be stored)`}
-                    placeholder={`Specify the URL, path of you image`}
+                    placeholder={`Specify the URL, path of your image`}
                     value={profileImg?.src || ""}
                     onChange={(value: string) => {
                       setProfileImg((prev) => {
