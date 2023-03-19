@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.17] 2023-03-19
+
+- Typo fix by [Santosh Yadav](https://github.com/santoshyadavdev)
+
 ## [0.0.16] 2023-03-13
 
 - Added rotation support
