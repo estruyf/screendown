@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.18] 2023-03-20
+
+- Fix inner wrapper width
+
 ## [0.0.17] 2023-03-19
 
 - Typo fix by [Santosh Yadav](https://github.com/santoshyadavdev)
