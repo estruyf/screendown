@@ -1,6 +1,6 @@
 # Change Log
 
-## [0.0.18] 2023-03-22
+## [0.0.19] 2023-03-22
 
 - Show the corresponding file icon for the file type
 - Support for HTML rendering from HTML files
