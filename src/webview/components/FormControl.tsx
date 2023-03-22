@@ -395,14 +395,27 @@ export const FormControl: React.FunctionComponent<IFormControlProps> = ({ handle
                     onChange={(value) => {
                       updateScreenshotDetails({ titleBarType: value as TitleBarType });
                     }} />
+                </div>
 
-                  <StringField
-                    label={`Title`}
-                    placeholder={`Title for title bar`}
-                    value={screenshotDetails.title || ""}
-                    onChange={(value: string) => {
-                      updateScreenshotDetails({ title: value });
-                    }} />
+                <div className='flex w-full space-x-4'>
+                  <div className='w-1/2'>
+                    <StringField
+                      label={`Title`}
+                      placeholder={`Title for title bar`}
+                      value={screenshotDetails.title || ""}
+                      onChange={(value: string) => {
+                        updateScreenshotDetails({ title: value });
+                      }} />
+                  </div>
+
+                  <div className='w-1/2 flex items-end mb-2'>
+                    <Checkbox
+                      label={`Show file icon`}
+                      checked={screenshotDetails.showFileIcon}
+                      onChange={(value) => {
+                        updateScreenshotDetails({ showFileIcon: value });
+                      }} />
+                  </div>
                 </div>
               </Disclosure.Panel>
             </>

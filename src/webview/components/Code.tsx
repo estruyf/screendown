@@ -15,12 +15,12 @@ export const Code: React.FunctionComponent<ICodeProps> = ({ children, inline, sh
   const [code, setCode] = useState('');
   const [themeJson, setThemeJson] = useState<any>(undefined);
 
-  const getLanguage = (className: string) => {
-    const language = className.split('-')[1];
-
+  const getLanguage = (language: string) => {
     switch (language) {
       case 'ts':
+      case 'typescriptreact':
         return 'typescript';
+      case 'javascriptreact':
       case 'js':
         return 'javascript';
       case 'html':
@@ -34,7 +34,8 @@ export const Code: React.FunctionComponent<ICodeProps> = ({ children, inline, sh
 
   const initCode = useCallback(async () => {
     if (className && children && themeJson) {
-      const language = className.split('-')[1];
+      let language = getLanguage(className.split('-')[1]);
+
       shiki.setCDN(`${extUrl}/assets/shiki/`);
 
       shiki.getHighlighter({
@@ -48,7 +49,7 @@ export const Code: React.FunctionComponent<ICodeProps> = ({ children, inline, sh
         }
 
         const htmlCode = highlighter.codeToHtml(code, {
-          lang: getLanguage(className)
+          lang: getLanguage(language)
         });
 
         // Replace all lines
@@ -111,7 +112,6 @@ export const Code: React.FunctionComponent<ICodeProps> = ({ children, inline, sh
     return null;
   }
 
-  console.log(code);
   return (
     <div className={`shiki ${showLineNumbers ? 'show__linenumbers' : ''}`} dangerouslySetInnerHTML={{ __html: code }} />
   );

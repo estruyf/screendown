@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.0.18] 2023-03-22
+
+- Show the corresponding file icon for the file type
+- Support for HTML rendering from HTML files
+- Added file icon support by integration of the [vscode-icons](https://marketplace.visualstudio.com/items?itemName=vscode-icons-team.vscode-icons) extension icon set
+- Fixing an issue for Shiki when loading React TSX or JSX files
+
 ## [0.0.18] 2023-03-20
 
 - Fix inner wrapper width

@@ -1,16 +1,19 @@
 import * as React from 'react';
 import { useMemo } from 'react';
+import { extensions } from '../../constants';
 import { TitleBarNames, TitleBarType } from '../models';
 
 export interface ITitleBarProps {
   title?: string;
+  language?: string;
   innerBorder: number;
   innerPadding: number;
   fontSize?: number;
+  showFileIcon: boolean;
   barType: TitleBarType;
 }
 
-export const TitleBar: React.FunctionComponent<ITitleBarProps> = ({ barType, title, innerBorder, innerPadding, fontSize }: React.PropsWithChildren<ITitleBarProps>) => {
+export const TitleBar: React.FunctionComponent<ITitleBarProps> = ({ barType, title, language, innerBorder, innerPadding, fontSize, showFileIcon }: React.PropsWithChildren<ITitleBarProps>) => {
 
   const styles = useMemo(() => {
     if (barType === TitleBarNames.macOS || barType === TitleBarNames.Windows) {
@@ -19,6 +22,29 @@ export const TitleBar: React.FunctionComponent<ITitleBarProps> = ({ barType, tit
       return `bg-[var(--vscode-titleBar-inactiveBackground)] text-[var(--vscode-titleBar-inactiveForeground)]`;
     }
   }, [barType])
+
+  const imgUrl = useMemo(() => {
+    if (!showFileIcon) {
+      return null;
+    }
+
+    const imgUrl = `https://raw.githubusercontent.com/vscode-icons/vscode-icons/master/icons/`;
+    const defaultImg = `${imgUrl}default_file.svg`;
+
+    if (!language) {
+      return defaultImg;
+    }
+
+    // Get by language
+    const file = extensions.supported.find(x => x.languages && x.languages.find(l => l.ids === language));
+    if (!file) {
+      return defaultImg;
+    }
+
+    const fileIcon = `${imgUrl}file_type_${file.icon}.${file.format}`;
+    return fileIcon;
+  }, [showFileIcon, language]);
+
 
   if (barType === TitleBarNames.None && !title) {
     return null;
@@ -31,7 +57,7 @@ export const TitleBar: React.FunctionComponent<ITitleBarProps> = ({ barType, tit
       marginLeft: `-${innerPadding}em`,
       marginRight: `-${innerPadding}em`,
       marginTop: `-${innerPadding}em`,
-      marginBottom: `${innerPadding/2}em`,
+      marginBottom: `${innerPadding / 2}em`,
     }}>
       {
         (barType === TitleBarNames.macOS || barType === TitleBarNames.macOSInactive) && (
@@ -45,8 +71,15 @@ export const TitleBar: React.FunctionComponent<ITitleBarProps> = ({ barType, tit
 
       {
         title && (
-          <div className='w-full text-lg text-center font-normal' style={{ fontSize: `${fontSize}px`}}>
-            {title}
+          <div className='w-full text-lg  font-normal' style={{ fontSize: `${fontSize}px` }}>
+            <div className='flex justify-center items-center mx-auto'>
+              {
+                showFileIcon && imgUrl && (
+                  <img className='h-6 w-6 mr-2' src={imgUrl} />
+                )
+              }
+              <span>{title}</span>
+            </div>
           </div>
         )
       }

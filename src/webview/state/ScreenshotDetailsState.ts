@@ -21,6 +21,7 @@ export const ScreenshotDetaisDefaultState = {
   scale: Defaults.scale,
   translateX: Defaults.translateX,
   translateY: Defaults.translateY,
+  showFileIcon: Defaults.showFileIcon,
   title: undefined,
   linkColor: undefined,
   width: undefined,

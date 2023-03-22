@@ -21,6 +21,7 @@ export interface ScreenshotDetails {
   rotation: number;
   translateX: number;
   translateY: number;
+  showFileIcon: boolean;
 
   titleBarType: TitleBarType;
   title?: string;

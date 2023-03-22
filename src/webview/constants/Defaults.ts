@@ -19,5 +19,6 @@ export const Defaults = {
   rotation: 0,
   scale: 1,
   translateX: 0,
-  translateY: 0
+  translateY: 0,
+  showFileIcon: true,
 };

@@ -43,6 +43,7 @@ export const App: React.FunctionComponent<IAppProps> = ({
   const screenshotRef = useRef<HTMLDivElement>(null);
   const referenceRef = useRef<HTMLHeadingElement>(null);
   const [code, setCode] = useState<string>('');
+  const [language, setLanguage] = useState<string>('');
   const [scale, setScale] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
   const [themeId, setThemeId] = useState<string | undefined>(undefined);
@@ -56,7 +57,8 @@ export const App: React.FunctionComponent<IAppProps> = ({
    */
   const processContent = (data: ContentData) => {
     if (data.content && data.language) {
-      if (data.language !== 'markdown') {
+      setLanguage(data.language);
+      if (data.language !== 'markdown' && data.language !== 'html') {
         setCode(`\`\`\`${data.language.toLowerCase()}
 ${data.content.trim()}
 \`\`\``);
@@ -256,6 +258,7 @@ ${data.content.trim()}
           />
         );
       }
+
       return (
         <Code
           themeId={themeId}
@@ -399,6 +402,8 @@ ${data.content.trim()}
                       innerPadding={screenshotDetails.innerPadding}
                       title={screenshotDetails.title}
                       fontSize={screenshotDetails.fontSize}
+                      showFileIcon={screenshotDetails.showFileIcon}
+                      language={language}
                     />
 
                     <ReactMarkdown
