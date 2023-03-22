@@ -1,4 +1,4 @@
-import { FileFormat } from './fileFormat';
+import { FileFormat } from './FileFormat';
 
 export interface IFileCollection extends IExtensionCollection<IFileExtension> {
   default: IFileDefault;
