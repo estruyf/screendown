@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.20] 2023-10-18
+
+- Updated the description of the extension
+
 ## [0.0.19] 2023-03-22
 
 - Show the corresponding file icon for the file type
