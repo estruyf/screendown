@@ -5,7 +5,7 @@
   "icon": "assets/icon-128x128.png",
   "publisher": "eliostruyf",
   "preview": true,
-  "version": "0.0.19",
+  "version": "0.0.20",
   "repository": {
     "url": "https://github.com/estruyf/screendown",
     "type": "git"
@@ -28,15 +28,19 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
-    "commands": [{
-      "command": "screendown.openWebview",
-      "title": "Screendown: Take a screenshot"
-    }],
-    "menus": {
-      "editor/context": [{
+    "commands": [
+      {
         "command": "screendown.openWebview",
-        "when": "editorHasSelection"
-      }]
+        "title": "Screendown: Take a screenshot"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "screendown.openWebview",
+          "when": "editorHasSelection"
+        }
+      ]
     }
   },
   "scripts": {
