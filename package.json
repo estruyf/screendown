@@ -1,7 +1,7 @@
 {
   "name": "screendown",
   "displayName": "Screendown",
-  "description": "Screendown is an easy-to-use tool that allows you to create beautiful screenshots of your Markdown within Visual Studio Code editor content.",
+  "description": "Ccreate screenshots of your Markdown/code within Visual Studio Code",
   "icon": "assets/icon-128x128.png",
   "publisher": "eliostruyf",
   "preview": true,
@@ -28,19 +28,15 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
-    "commands": [
-      {
-        "command": "screendown.openWebview",
-        "title": "Screendown: Take a screenshot"
-      }
-    ],
+    "commands": [{
+      "command": "screendown.openWebview",
+      "title": "Screendown: Take a screenshot"
+    }],
     "menus": {
-      "editor/context": [
-        {
-          "command": "screendown.openWebview",
-          "when": "editorHasSelection"
-        }
-      ]
+      "editor/context": [{
+        "command": "screendown.openWebview",
+        "when": "editorHasSelection"
+      }]
     }
   },
   "scripts": {
