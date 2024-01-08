@@ -119,6 +119,8 @@ input[type='range']:focus::-webkit-slider-thumb {
 code,
 pre {
   font-family: var(--vscode-editor-font-family) !important;
+  background-color: transparent !important;
+  padding: 0 !important;
 }
 
 code pre {

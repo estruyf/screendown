@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.20] 2024-01-08
+
+- [#9](https://github.com/estruyf/screendown/issues/9): Fix to the `code` element styles provided by VSCode
+
 ## [0.0.20] 2023-10-18
 
 - Updated the description of the extension
