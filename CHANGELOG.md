@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.22] 2024-01-08
+
+- [#8](https://github.com/estruyf/screendown/issues/8): Added math support for Markdown
+
 ## [0.0.21] 2024-01-08
 
 - [#9](https://github.com/estruyf/screendown/issues/9): Fix to the `code` element styles provided by VSCode

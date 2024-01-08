@@ -1,7 +1,9 @@
 import * as React from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
+import rehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math'
 import { messageHandler, Messenger } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
 import { domToBlob } from 'modern-screenshot';
@@ -407,8 +409,8 @@ ${data.content.trim()}
                     />
 
                     <ReactMarkdown
-                      rehypePlugins={[rehypeRaw]}
-                      remarkPlugins={[remarkGfm]}
+                      rehypePlugins={[rehypeRaw, rehypeKatex]}
+                      remarkPlugins={[remarkGfm, remarkMath]}
                       components={{
                         img: (props) => {
                           return generateImage(props);
