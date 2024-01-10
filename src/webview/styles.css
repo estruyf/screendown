@@ -170,3 +170,7 @@ blockquote {
   color: var(--vscode-sideBar-foreground);
   @apply p-4;
 }
+
+.katex-html {
+  display: none;
+}

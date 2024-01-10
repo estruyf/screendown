@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.23] 2024-01-10
+
+- [#8](https://github.com/estruyf/screendown/issues/8): Hide the math HTML block
+
 ## [0.0.22] 2024-01-08
 
 - [#8](https://github.com/estruyf/screendown/issues/8): Added math support for Markdown
